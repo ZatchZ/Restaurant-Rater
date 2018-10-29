@@ -1,0 +1,8 @@
+{{extend 'layout.html'}}
+
+{{blockhead}}
+{{end}}
+
+<div class = "maincontent">
+    {{=form}}
+</div>
