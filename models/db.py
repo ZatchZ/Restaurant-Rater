@@ -3,6 +3,8 @@
 # This scaffolding model makes your app work on Google App Engine too
 # File is released under public domain and you can use without limitations
 
+
+
 if request.global_settings.web2py_version < "2.14.1":
     raise HTTP(500, "Requires web2py 2.13.3 or newer")
 
@@ -58,12 +60,20 @@ response.form_label_separator = myconf.get('forms.separator') or ''
 # - old style crud actions
 # (more options discussed in gluon/tools.py)
 
-from gluon.tools import Auth, Service, PluginManager
+from gluon.tools import Auth, Crud, Service, PluginManager
 
 # host names must be a list of allowed host names (glob syntax allowed)
 auth = Auth(db, host_names=myconf.get('host.names'))
 service = Service()
 plugins = PluginManager()
+crud = Crud(db)
+
+import datetime
+
+auth.settings.extra_fields['auth_user'] = [
+
+    Field('profile_picture', 'upload', label='Profile Picture'),
+]
 
 # create all tables needed by auth if not custom tables
 auth.define_tables(username=False, signature=False)
@@ -97,3 +107,5 @@ logger.setLevel(logging.INFO)
 
 # Let's log the request.
 logger.info("====> Request: %r %r %r %r" % (request.env.request_method, request.env.path_info, request.args, request.vars))
+
+

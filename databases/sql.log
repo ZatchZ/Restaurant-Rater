@@ -93,3 +93,17 @@ CREATE TABLE "reply"(
     "reply_time" TIMESTAMP
 );
 success!
+timestamp: 2018-10-30T14:44:56.415000
+CREATE TABLE "web2py_session_RR"(
+    "id" INTEGER PRIMARY KEY AUTOINCREMENT,
+    "locked" CHAR(1),
+    "client_ip" CHAR(64),
+    "created_datetime" TIMESTAMP,
+    "modified_datetime" TIMESTAMP,
+    "unique_key" CHAR(64),
+    "session_data" BLOB
+);
+success!
+timestamp: 2018-10-30T15:12:43.319000
+ALTER TABLE "auth_user" ADD "profile_picture" CHAR(512);
+success!

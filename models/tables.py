@@ -38,3 +38,6 @@ db.define_table('reply',
                 Field('reply_content', 'text'),
                 Field('reply_time', 'datetime', update=get_current_time())
                 )
+#----------------------------------------
+User= db.auth_user
+me = auth.user_id
