@@ -7,7 +7,12 @@
 # There is an implicit 'id integer autoincrement' field
 # Consult manual for more options, validators, etc.
 
-# logger.info("The user record is: %r" % auth.user)
+
+
+
+# after defining tables, uncomment below to enable auditing
+# auth.enable_record_versioning(db)
+
 
 import datetime
 
@@ -21,20 +26,26 @@ db.define_table('post',
                 Field('post_author', default=get_user_email()),
                 Field('post_title'),
                 Field('post_content', 'text'),
-                Field('post_time', 'datetime', update=get_current_time()),
+                Field('post_time', 'datetime', default=get_current_time()),
                 )
 
-db.post.post_time.readable = db.post.post_time.writable = False
-db.post.post_author.writable = False
-db.post.id.readable = False
-# after defining tables, uncomment below to enable auditing
-# auth.enable_record_versioning(db)
+
+# Thumbs
+db.define_table('thumb',
+                Field('user_email'), # The user who thumbed, easier to just write the email here.
+                Field('post_id', 'reference post'), # The thumbed post
+                Field('thumb_state'), # This can be 'u' for up or 'd' for down, or None for... None.
+                )
 
 # Replies
-
 db.define_table('reply',
                 Field('post_id', 'reference post'),
                 Field('reply_author', default=get_user_email()),
                 Field('reply_content', 'text'),
                 Field('reply_time', 'datetime', update=get_current_time())
                 )
+
+db.reply.post_id.readable = db.reply.post_id.writable = False
+db.reply.reply_author.readable = db.reply.reply_author.writable = False
+db.reply.reply_time.readable = db.reply.reply_time.writable = False
+db.reply.id.readable = False

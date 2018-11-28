@@ -1,53 +1,152 @@
 {{extend 'layout.html'}}
 
 {{block head}}
+<script src="{{=URL('static', 'js/vue.js')}}"></script>
+<script>
+    //posts
+    var add_post_url = "{{=URL('api', 'add_post', user_signature=True)}}";
+    var edit_post_url = "{{=URL('api', 'edit_post', user_signature=True)}}";
+    var get_post_list_url = "{{=URL('api', 'get_post_list')}}";
+    //replies
+    var add_reply_url = "{{=URL('api', 'add_reply', user_signature=True)}}";
+    var edit_reply_url = "{{=URL('api', 'edit_reply', user_signature=True)}}";
+    var get_reply_list_url = "{{=URL('api', 'get_reply_list')}}";
+    // thumbs.
+    var thumb_count_url = "{{=URL('api', 'all_thumbs')}}";
+    var thumb_up_url = "{{=URL('api', 'thumb_up', user_signature=True)}}";
+    var thumb_down_url = "{{=URL('api', 'thumb_down', user_signature=True)}}";
+
+    var is_logged_in = {{='false' if auth.user is None else 'true'}};
+    var curr_user = "{{=auth.user.email if auth.user else None}}";
+</script>
 {{end}}
 
 <div class="main_content">
 
-  <p>
-    <a href="{{=URL('default', 'add')}}" class="btn">Add Post</a>
-  </p>
+    <div id="vue-div" class="display:none">
+      <div id="add_post" style="display:none">
+        <div v-if="show_form">
+          <div class="container form_row">
+            <div class="label quarter">
+              Title:
+            </div>
+            <div class="form threequarters">
+              <input v-model="form_title" placeholder="Enter the post title"/>
+            </div>
+          </div>
+          <div class="container form_row">
+            <div class="label quarter">
+              Content:
+            </div>
+            <div class="form threequarters">
+              <textarea v-model="form_content" placeholder="Enter the content of your post"></textarea>
+            </div>
+          </div>
+          <div class="container form_row"><div class="quarter"></div>
+            <div class="threequarters">
+              <div class="submit">
+                <button id="add-post" v-on:click="add_post">Submit</button>
+              </div>
+            </div>
+          </div>
+        </div>
+        <button v-show="!show_form" v-on:click="show_form = true">Add Post <i class="fa fa-plus-circle"></i></button>
+      </div>
 
-{{for r in rows:}}
-  <div class="post">
-    <div class="author">Author: {{=r['post_author']}}</div>
-    <div class="title">Title: {{=r['post_title']}}</div>
-    <div class="content">Content: {{=r['post_content']}}</div>
+      <!-- Message in case there are no posts. -->
+      <div v-if="post_list.length === 0">There are no posts.</div>
 
-    <div class="button_row">
-      {{if auth.user is not None and auth.user.email == r['post_author']:}}
-        <a href="{{=URL('default', 'edit', args=[r['id']])}}" class="btn">
-          <i class="fa fa-pencil-square-o"></i> Edit
-        </a>
-      {{pass}}
-      {{if auth.user is not None:}}
-        <a href="{{=URL('default', 'add_reply', args=[r['id']])}}" class="btn">
-          <i class="fa fa-plus"></i> Reply
-        </a>
-      {{pass}}
+      <!-- We display the posts. -->
+      <div id="post_list">
+        <div class="post_div" v-for="post in post_list">
+	          <div class="post_title">${post.post_title}</div>
+	          <div class="post_content">
+	          	<div v-if="!post.editing">
+	          	  <div>${post.post_content}</div>
+	          	    <div class="start-edit" v-if="post.editable">
+                  	  <button id="edit" v-on:click="edit_post(post._idx)">Edit <i class="fa fa-pencil-square-o"></i></button>
+              	  </div>
+	          	</div>
+	          	<div v-if="post.editing">
+	          	  <textarea v-model="post.post_content"></textarea>
+	          	  <div class="editing">
+                  <button id="save-edit" v-on:click="save_edit(post._idx)">Save</button>
+              	  </div>
+	          	</div>
+	     	  </div>
+	          <div class="attributes">
+	            <!-- Code for Thumbs. -->
+	            <div class="thumbs">
+	              <span class="thumb_up">
+	                <span v-if="is_logged_in" class="toggle_tUp"
+	                      v-on:mouseover="thumbUp_mouseover(post._idx);"
+	                      v-on:click="thumbUp_click(post._idx);"
+	                      v-on:mouseout="thumbUp_mouseout(post._idx);">
+	                  <i v-if="post._tUp" class="fa fa-thumbs-up" v-bind:class="{changed: post._tUp_black === false}"></i>
+	                  <i v-if="!post._tUp" class="fa fa-thumbs-o-up" v-bind:class="{changed: post._tUp_black === false}"></i>
+	                </span>
+	              </span>
+	              <span class="thumb_down">
+	                <span v-if="is_logged_in" class="toggle_tDown"
+	                      v-on:mouseover="thumbDown_mouseover(post._idx);"
+	                      v-on:click="thumbDown_click(post._idx);"
+	                      v-on:mouseout="thumbDown_mouseout(post._idx);">
+	                  <i v-if="post._tDown" class="fa fa-thumbs-down" v-bind:class="{changed: post._tDown_black === false}"></i>
+	                  <i v-if="!post._tDown" class="fa fa-thumbs-o-down" v-bind:class="{changed: post._tDown_black === false}"></i>
+	                </span>
+	              </span>
+	              <span class="thumb_count">Thumb count: ${post._count}</span>
+	            </div>
+              
+              <!-- Code for Replies. -->
+              <div class="replies_div">
+                <div v-if="post.show_reply">
+                  <button v-on:click="show_reply_toggle(post._idx)">Hide Replies</button>
+                  <button v-if="is_logged_in" v-show="!post.replying" v-on:click="post.replying = true">Add Reply <i class="fa fa-plus-circle"></i></button>
+                  <div v-if="post.replying">
+                    <div class="container form_row">
+                      <div class="form">
+                        <textarea v-model="post.reply_content" placeholder="Enter the content of your reply"></textarea>
+                      </div>
+                    </div>
+                    <div class="container form_row">
+                      <div class="submit">
+                        <button id="add-reply" v-on:click="add_reply(post._idx)">Submit</button>
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- Message in case there are no replies. -->
+                  <div v-if="post.reply_list.length === 0">There are no replies.</div>
+
+                  <!-- We display the replies. -->
+                  <div id="reply_list">
+                    <span v-if="post.reply_list.length > 0">Comments:</span>
+                    <div class="reply_div" v-for="reply in post.reply_list">
+                      <div class="reply_author">Author: ${reply.reply_author}</div>
+                      <div class="reply_content">
+                        <div v-if="!reply.editing">
+                          <div>Content: ${reply.reply_content}</div>
+                          <div class="start-edit" v-if="reply.editable">
+                            <button id="edit" v-on:click="edit_reply(post._idx, reply._idx)">Edit <i class="fa fa-pencil-square-o"></i></button>
+                          </div>
+                        </div>
+                        <div v-if="reply.editing">
+                          <textarea v-model="reply.reply_content"></textarea>
+                          <div class="editing">
+                            <button id="save-edit" v-on:click="save_reply_edit(post._idx, reply._idx)">Save</button>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div> 
+                <button v-show="!post.show_reply" v-on:click="get_replies(post._idx); show_reply_toggle(post._idx)">Reply / Show Replies</button>
+              </div>
+	          </div>
+      </div>
     </div>
 
-    <!-- Here we display the replies.  If you are the author of a reply, you can edit/delete it. -->
-      {{for reply in r['reply_list']:}}
-        <div class="add_reply">
-          <!-- Display here a reply -->
-          <div class="reply_author">Author: {{=reply['reply_author']}}</div>
-          <div class="reply_content">Content: {{=reply['reply_content']}}</div>
-          {{if auth.user is not None and auth.user.email == reply['reply_author']:}}
-            <div class="reply options">
-              <a href="{{=URL('default', 'edit_reply', args=[reply['reply_id']], user_signature=True)}}" class="btn">
-                <i class="fa fa-pencil-square-o"></i> Edit
-              </a>
-              <a href="{{=URL('default', 'delete_reply', args=[reply['reply_id']], user_signature=True)}}" class="btn">
-                <i class="fa fa-trash-o"></i> Delete
-              </a>
-            </div>
-          {{pass}}
-        </div>
-
-      {{pass}}
-  </div>
-{{pass}}
-
 </div>
+
+<script src="{{=URL('static', 'js/default_index.js')}}"></script>

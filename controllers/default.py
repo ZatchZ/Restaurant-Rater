@@ -8,142 +8,10 @@
 # - download is for downloading files uploaded in the db (does streaming)
 # -------------------------------------------------------------------------
 
-import datetime
-
 
 def index():
-    result = [] # We will accummulate the result here.
-    for r in db(db.post.id > 0).select():
-        # This is a loop over all the posts.
-
-        # Each post can have replies; you need to read here the list of replies.
-        # As each reply has an author and a content, a list of dictionaries seems
-        # appropriate here.
-        reply_list=[]
-        replies = db(db.reply.post_id == r.id).select(orderby=db.reply.reply_time)
-        for reply in replies:
-            reply_list.append(dict(
-                reply_id = reply.id,
-                reply_author = reply.reply_author,
-                reply_content = reply.reply_content,
-            ))
-
-        result.append(dict(
-            post_title=r.post_title,
-            post_author=r.post_author,
-            post_content=r.post_content,
-            reply_list=reply_list,
-            id=r.id,
-        ))
-
-    logger.info("Result: %r" % result)
-    return dict(rows=result)
-
-
-@auth.requires_login()
-def add_reply():
-    db.reply.reply_author.writable = False
-    db.reply.post_id.writable = False
-    db.reply.reply_time.writable = False
-    form = SQLFORM(db.reply)
-    # You will be creating a form, in some way, e.g. using SQLFORM, and you will write
-    # BEFORE processing the form:
-    form.vars.post_id = int(request.args[0])
-    if form.process().accepted:
-        redirect(URL('default', 'index'))
-    # We ask web2py to lay out the form for us.
-    logger.info("My session is: %r" % session)
-    return dict(form=form)
-
-
-@auth.requires_login()
-@auth.requires_signature()
-def edit_reply():
-    """COMPLETE (and remove line below or replace as appropriate)"""
-    # For this controller only, we hide the author.
-    db.reply.reply_author.writable = False
-    db.reply.reply_author.readable = False
-    db.reply.post_id.writable = False
-    db.reply.post_id.readable = False
-    db.reply.reply_time.writable = False
-    db.reply.reply_time.readable = False
-    db.reply.id.readable = False
-    
-    reply = db.reply(request.args(0))
-    # We must validate everything we recieve.
-    if reply is None:
-        logging.info("Invalid edit call")
-        redirect(URL('default', 'index'))
-    # One can eidt only one's own posts.
-    if reply.reply_author != auth.user.email:
-        logging.info("Attempt to edit someone else's post by: %r" % auth.user.email)
-        redirect(URL('default', 'index'))
-    # Now we must generate a form that allows editing the post.
-    form = SQLFORM(db.reply, record=reply)
-    if form.process().accepted:
-        # The deed is done.
-        redirect(URL('default', 'index'))
-    return dict(form=form)
-
-
-@auth.requires_login()
-@auth.requires_signature()
-def delete_reply():
-    """COMPLETE (and remove line below or replace as appropriate)"""
-    # We must validate everything we receive. 
-
-    reply = db.reply(request.args(0))
-    if reply is None:
-        logging.info("Invalid delete call")
-        redirect(URL('default', 'index'))
-    # One can delete only one's own posts.
-    if reply.reply_author != auth.user.email:
-        logging.info("Attempt to delete some one else's post by: %r" % auth.user.email)
-        redirect(URL('default', 'index'))
-    # Now we must generate a form that allows editing the post.
-    form = SQLFORM(db.reply, record=reply)
-    del db.reply[request.args(0)]
-    redirect(URL('default', 'index'))
-
-
-@auth.requires_login()
-def add():
-    """More sophisticated way, in which we use web2py to come up with the form."""
-    form = SQLFORM(db.post)
-    # We can process the form.  This will check that the request is a POST,
-    # and also perform validation, but in this case there is no validation.
-    # THIS process() also inserts.
-    if form.process().accepted:
-        redirect(URL('default', 'index'))
-    # We ask web2py to lay out the form for us.
-    logger.info("My session is: %r" % session)
-    return dict(form=form)
-
-
-# We require login.
-@auth.requires_login()
-def edit():
-    """Allows editing of a post.  URL form: /default/edit/<n> where n is the post id."""
-
-    # For this controller only, we hide the author.
-    db.post.post_author.readable = False
-    db.post.post_time.writable = False
-
-    post = db.post(request.args(0))
-    # We must validate everything we receive.
-    if post is None:
-        logging.info("Invalid edit call")
-        redirect(URL('default', 'index'))
-    # One can edit only one's own posts.
-    if post.post_author != auth.user.email:
-        logging.info("Attempt to edit some one else's post by: %r" % auth.user.email)
-        redirect(URL('default', 'index'))
-    # Now we must generate a form that allows editing the post.
-    form = SQLFORM(db.post, record=post)
-    if form.process().accepted:
-        # The deed is done.
-        redirect(URL('default', 'index'))
-    return dict(form=form)
+    # We just want to expand the template.
+    return dict()
 
 
 def user():
@@ -182,3 +50,5 @@ def call():
     supports xml, json, xmlrpc, jsonrpc, amfrpc, rss, csv
     """
     return service()
+
+
