@@ -34,7 +34,10 @@ db.define_table('reply',
                 Field('post_id', 'reference post'),
                 Field('reply_author', default=get_user_email()),
                 Field('reply_content', 'text'),
-                Field('reply_time', 'datetime', update=get_current_time())
+                Field('reply_time', 'datetime', update=get_current_time()),
+                Field('rating0', 'integer', default=None), # The star ratings.
+                Field('rating1', 'integer', default=None), # The star ratings.
+                Field('rating2', 'integer', default=None) # The star ratings.
                 )
 
 # Thumbs
@@ -42,15 +45,6 @@ db.define_table('thumb',
                 Field('user_email'), # The user who thumbed, easier to just write the email here.
                 Field('post_id', 'reference post'), # The thumbed post
                 Field('thumb_state'), # This can be 'u' for up or 'd' for down, or None for... None.
-                )
-
-# Stars ratings
-db.define_table('stars',
-                Field('user_email'), # The user who starred
-                Field('reply_id', 'reference reply'), # The starred reply
-                Field('rating0', 'integer', default=None), # The star ratings.
-                Field('rating1', 'integer', default=None), # The star ratings.
-                Field('rating2', 'integer', default=None) # The star ratings.
                 )
 
 

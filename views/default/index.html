@@ -130,7 +130,11 @@
                       <div class="reply_content">
                         <div v-if="!reply.editing">
                           <div>Content: ${reply.reply_content}</div>
-                          <!-- Code for star ratings. -->
+                          <div class="start-edit" v-if="reply.editable">
+                            <button id="edit" v-on:click="edit_reply(post._idx, reply._idx)">Edit <i class="fa fa-pencil-square-o"></i></button>
+                          </div>
+                        </div>
+                        <!-- Code for star ratings. -->
         				  <div v-if="is_logged_in" class="star_rating">
         				  	<div v-for="starr_idx in [0,1,2]">
         				  	  ${rating_strings[starr_idx]}
@@ -145,10 +149,6 @@
               				</div>
             			  </div>
 						  <!-- Code for star ratings ends. -->
-                          <div class="start-edit" v-if="reply.editable">
-                            <button id="edit" v-on:click="edit_reply(post._idx, reply._idx)">Edit <i class="fa fa-pencil-square-o"></i></button>
-                          </div>
-                        </div>
                         <div v-if="reply.editing">
                           <textarea v-model="reply.reply_content"></textarea>
                           <div class="editing">

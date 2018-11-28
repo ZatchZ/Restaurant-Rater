@@ -159,6 +159,7 @@ var app = function() {
                     reply_content: sent_content
                 };
                 p.reply_list.unshift(new_reply);
+                self.get_replies(post_idx);
                 self.process_replies(post_idx);
                 p.replying = false;
             });
@@ -192,10 +193,12 @@ var app = function() {
     };
 
     self.stars_over = function(post_idx, reply_idx, arr_idx, star_idx) {
+
         //console.log(post_idx, reply_idx, arr_idx, star_idx)
         // Hovering over a star; we show that as the number of active stars.
         var p = self.vue.post_list[post_idx];
         var r = p.reply_list[reply_idx];
+        console.log(r.rating0, r.rating1, r.rating2)
         r._arr_num_stars[arr_idx] = star_idx;
     };
 
