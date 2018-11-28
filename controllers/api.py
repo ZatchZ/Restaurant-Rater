@@ -68,13 +68,30 @@ def edit_reply():
 
 def get_reply_list():
     results = []
-    rows = db(db.reply.post_id == request.vars.post_id).select(orderby=~db.reply.reply_time)
+
+    rows = db().select(db.reply.ALL, db.stars.ALL,
+                            left=[
+                                db.stars.on((db.stars.reply_id == db.reply.id) & (db.stars.user_email == auth.user.email))
+                            ],
+                            orderby=~db.reply.reply_time)
     for row in rows:
+        print row
         results.append(dict(
-            id=row.id,
-            reply_author=row.reply_author,
-            reply_content=row.reply_content
+            id=row.reply.id,
+            reply_content=row.reply.reply_content,
+            reply_author=row.reply.reply_author,
+            rating0 = None if row.stars.id is None else row.stars.rating0,
+            rating1 = None if row.stars.id is None else row.stars.rating1,
+            rating2 = None if row.stars.id is None else row.stars.rating2
         ))
+
+    # rows = db(db.reply.post_id == request.vars.post_id).select(orderby=~db.reply.reply_time)
+    # for row in rows:
+    #     results.append(dict(
+    #         id=row.id,
+    #         reply_author=row.reply_author,
+    #         reply_content=row.reply_content
+    #     ))
     # For homogeneity, we always return a dictionary.
     return response.json(dict(reply_list=results))
 
@@ -129,4 +146,33 @@ def thumb_down():
             user_email = auth.user.email,
             thumb_state = None
         )
+    return "ok" # Might be useful in debugging.
+
+def set_stars():
+    """Sets the star rating of a post."""
+    reply_id = int(request.vars.reply_id)
+    rating = int(request.vars.rating)
+    rating_idx = int(request.vars.rating_idx)
+    if rating_idx == 0:
+        db.stars.update_or_insert(
+            (db.stars.reply_id == reply_id) & (db.stars.user_email == auth.user.email),
+            reply_id = reply_id,
+            user_email = auth.user.email,
+            rating0 = rating
+        )
+    if rating_idx == 1:
+        db.stars.update_or_insert(
+            (db.stars.reply_id == reply_id) & (db.stars.user_email == auth.user.email),
+            reply_id = reply_id,
+            user_email = auth.user.email,
+            rating1 = rating
+        )
+    if rating_idx == 2:
+        db.stars.update_or_insert(
+            (db.stars.reply_id == reply_id) & (db.stars.user_email == auth.user.email),
+            reply_id = reply_id,
+            user_email = auth.user.email,
+            rating2 = rating
+        )
+    
     return "ok" # Might be useful in debugging.

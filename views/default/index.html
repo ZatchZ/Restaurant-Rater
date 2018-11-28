@@ -15,7 +15,9 @@
     var thumb_count_url = "{{=URL('api', 'all_thumbs')}}";
     var thumb_up_url = "{{=URL('api', 'thumb_up', user_signature=True)}}";
     var thumb_down_url = "{{=URL('api', 'thumb_down', user_signature=True)}}";
-
+    //stars
+    var set_stars_url = "{{=URL('api', 'set_stars', user_signature=True)}}";
+    //user misc
     var is_logged_in = {{='false' if auth.user is None else 'true'}};
     var curr_user = "{{=auth.user.email if auth.user else None}}";
 </script>
@@ -128,6 +130,21 @@
                       <div class="reply_content">
                         <div v-if="!reply.editing">
                           <div>Content: ${reply.reply_content}</div>
+                          <!-- Code for star ratings. -->
+        				  <div v-if="is_logged_in" class="star_rating">
+        				  	<div v-for="starr_idx in [0,1,2]">
+        				  	  ${rating_strings[starr_idx]}
+              			  	  <span v-on:mouseout="stars_out(post._idx, reply._idx)">
+                			    <span v-on:mouseover="stars_over(post._idx, reply._idx, starr_idx, idx)"
+                      		  	  	  v-on:click="set_stars(post._idx, reply._idx, starr_idx, idx)"
+                      		  	  	  v-for="idx in star_indices">
+                    		  	  <i v-if="idx <= reply._arr_num_stars[starr_idx]" class="fa fa-star"></i>
+                    		  	  <i v-if="idx > reply._arr_num_stars[starr_idx]" class="fa fa-star-o"></i>
+                			    </span>
+              				  </span>
+              				</div>
+            			  </div>
+						  <!-- Code for star ratings ends. -->
                           <div class="start-edit" v-if="reply.editable">
                             <button id="edit" v-on:click="edit_reply(post._idx, reply._idx)">Edit <i class="fa fa-pencil-square-o"></i></button>
                           </div>
