@@ -107,6 +107,7 @@ var app = function() {
         $.post(edit_post_url,
             {
                 post_id: p.id,
+                post_title: p.post_title,
                 post_content: p.post_content
             },
             function (data) {

@@ -14,7 +14,10 @@ def add_post():
 @auth.requires_signature()
 def edit_post():
     row = db(db.post.id == request.vars.post_id).select().first()
-    row.update_record(post_content=request.vars.post_content)
+    row.update_record(
+        post_title=request.vars.post_title,
+        post_content=request.vars.post_content,
+        )
     return
 
 def get_post_list():

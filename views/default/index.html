@@ -59,7 +59,8 @@
       <!-- We display the posts. -->
       <div id="post_list">
         <div class="post_div" v-for="post in post_list">
-	          <div class="post_title">${post.post_title}</div>
+	          <div class="post_title" v-if="!post.editing">${post.post_title}</div>
+	          <textarea v-if="post.editing" v-model="post.post_title"></textarea>
 	          <div class="post_content">
 	          	<div v-if="!post.editing">
 	          	  <div>${post.post_content}</div>
