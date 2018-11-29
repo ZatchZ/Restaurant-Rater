@@ -120,20 +120,20 @@ var app = function() {
             Vue.set(e, 'editing', false);
             // Number of stars to display.
             Vue.set(e, '_arr_num_stars', e.ratings);
+
             // thumbs stuff
             //counting the current user's thumbs, if any
-            Vue.set(e, '_count', 0);
-            if(e.thumb == 'u') e._count++;
-            if(e.thumb == 'd') e._count--;
+            Vue.set(e, '_countU', 0);
+            Vue.set(e, '_countD', 0);
+            if(e.thumb == 'u') e._countU++;
+            if(e.thumb == 'd') e._countD++;
             //counting the amount of thumbs by other users, if any
             $.getJSON(thumb_count_url, {reply_id: e.id}, function (data) {
                 a = data.thumbs;
-                cnt = 0
                 for(var i = 0; i < a.length; ++i){
-                    if(a[i] == 'u') cnt++;
-                    if(a[i] == 'd') cnt--;
+                    if(a[i] == 'u') e._countU++;
+                    if(a[i] == 'd') e._countD++;
                 }
-                e._count += cnt;
             })
             Vue.set(e, '_tUp', (e.thumb == 'u'));
             Vue.set(e, '_tDown', (e.thumb == 'd'));
@@ -255,6 +255,7 @@ var app = function() {
 
     // code for thumbs
     self.thumbUp_mouseover = function (post_idx, reply_idx) {
+        if (!is_logged_in) return;
         var p = self.vue.post_list[post_idx];
         var r = p.reply_list[reply_idx];
         r._tUp = true;
@@ -274,6 +275,7 @@ var app = function() {
         r._tDown_black = true;
     };
     self.thumbDown_mouseover = function (post_idx, reply_idx) {
+        if (!is_logged_in) return;
         var p = self.vue.post_list[post_idx];
         var r = p.reply_list[reply_idx];
         r._tUp = false;
@@ -292,17 +294,19 @@ var app = function() {
         r._tDown_black = true;
     };
     self.thumbUp_click = function (post_idx, reply_idx) {
+        if (!is_logged_in) return;
         var p = self.vue.post_list[post_idx];
         var r = p.reply_list[reply_idx];
         if(r.thumb == 'u'){
            t = false; 
            r.thumb = null
-           r._count--;
+           r._countU--;
         } 
-        else {
+        else{
+            if(r.thumb == 'd')r._countD--;
             t = true;
             r.thumb = 'u'
-            r._count++;
+            r._countU++;
         }
         // We need to post back the change to the server.
         $.post(thumb_up_url, {
@@ -313,17 +317,19 @@ var app = function() {
         r._tDown_black = (r.thumb == 'd');
     };
     self.thumbDown_click = function (post_idx, reply_idx) {
+        if (!is_logged_in) return;
         var p = self.vue.post_list[post_idx];
         var r = p.reply_list[reply_idx];
         if(r.thumb == 'd'){
            t = false; 
            r.thumb = null
-           r._count++;
+           r._countD--;
         } 
         else {
+            if(r.thumb == 'u')r._countU--;
             t = true;
             r.thumb = 'd'
-            r._count--;
+            r._countD++;
         }
         // We need to post back the change to the server.
         $.post(thumb_down_url, {

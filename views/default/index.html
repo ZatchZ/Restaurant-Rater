@@ -148,7 +148,7 @@
 			            <!-- Code for Thumbs. -->
 			            <div class="thumbs">
 			              <span class="thumb_up">
-			                <span v-if="is_logged_in" class="toggle_tUp"
+			                <span class="toggle_tUp"
 			                      v-on:mouseover="thumbUp_mouseover(post._idx, reply._idx);"
 			                      v-on:click="thumbUp_click(post._idx, reply._idx);"
 			                      v-on:mouseout="thumbUp_mouseout(post._idx, reply._idx);">
@@ -158,8 +158,9 @@
 			                  v-bind:class="{changed: reply._tUp_black === false}"></i>
 			                </span>
 			              </span>
+			              <span class="thumb_countU"> ${reply._countU}</span>
 			              <span class="thumb_down">
-			                <span v-if="is_logged_in" class="toggle_tDown"
+			                <span class="toggle_tDown"
 			                      v-on:mouseover="thumbDown_mouseover(post._idx, reply._idx);"
 			                      v-on:click="thumbDown_click(post._idx, reply._idx);"
 			                      v-on:mouseout="thumbDown_mouseout(post._idx, reply._idx);">
@@ -169,7 +170,7 @@
 			                  	v-bind:class="{changed: reply._tDown_black === false}"></i>
 			                </span>
 			              </span>
-			              <span class="thumb_count">Thumb count: ${reply._count}</span>
+			              <span class="thumb_countD"> ${reply._countD}</span>
 			            </div>
 		              <!-- Code for Thumbs end. -->
                       </div>
