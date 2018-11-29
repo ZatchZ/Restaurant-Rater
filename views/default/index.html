@@ -79,35 +79,11 @@
 	     	  </div>
 	          <div class="attributes">
 
-	            <!-- Code for Thumbs. -->
-	            <div class="thumbs">
-	              <span class="thumb_up">
-	                <span v-if="is_logged_in" class="toggle_tUp"
-	                      v-on:mouseover="thumbUp_mouseover(post._idx);"
-	                      v-on:click="thumbUp_click(post._idx);"
-	                      v-on:mouseout="thumbUp_mouseout(post._idx);">
-	                  <i v-if="post._tUp" class="fa fa-thumbs-up" v-bind:class="{changed: post._tUp_black === false}"></i>
-	                  <i v-if="!post._tUp" class="fa fa-thumbs-o-up" v-bind:class="{changed: post._tUp_black === false}"></i>
-	                </span>
-	              </span>
-	              <span class="thumb_down">
-	                <span v-if="is_logged_in" class="toggle_tDown"
-	                      v-on:mouseover="thumbDown_mouseover(post._idx);"
-	                      v-on:click="thumbDown_click(post._idx);"
-	                      v-on:mouseout="thumbDown_mouseout(post._idx);">
-	                  <i v-if="post._tDown" class="fa fa-thumbs-down" v-bind:class="{changed: post._tDown_black === false}"></i>
-	                  <i v-if="!post._tDown" class="fa fa-thumbs-o-down" v-bind:class="{changed: post._tDown_black === false}"></i>
-	                </span>
-	              </span>
-	              <span class="thumb_count">Thumb count: ${post._count}</span>
-	            </div>
-              <!-- Code for Thumbs end. -->
-              
               <!-- Code for Replies. -->
               <div class="replies_div">
                 <div v-if="post.show_reply">
-                  <button v-on:click="show_reply_toggle(post._idx)">Hide Replies</button>
-                  <button v-if="is_logged_in" v-show="!post.replying" v-on:click="post.replying = true">Add Reply <i class="fa fa-plus-circle"></i></button>
+                  <button v-on:click="show_reply_toggle(post._idx)">Hide Reviews</button>
+                  <button v-if="is_logged_in" v-show="!post.replying" v-on:click="post.replying = true">Add Review <i class="fa fa-plus-circle"></i></button>
                   <div v-if="post.replying">
                     <div class="container form_row">
                       <div class="form">
@@ -134,11 +110,11 @@
                   </div>
 
                   <!-- Message in case there are no replies. -->
-                  <div v-if="post.reply_list.length === 0">There are no replies.</div>
+                  <div v-if="post.reply_list.length === 0">There are no reviews.</div>
 
                   <!-- We display the replies. -->
                   <div id="reply_list">
-                    <span v-if="post.reply_list.length > 0">Comments:</span>
+                    <span v-if="post.reply_list.length > 0">Reviews:</span>
                     <div class="reply_div" v-for="reply in post.reply_list">
                       <div class="reply_author">Author: ${reply.reply_author}</div>
                       <div class="reply_content">
@@ -168,11 +144,39 @@
                             <button id="save-edit" v-on:click="save_reply_edit(post._idx, reply._idx)">Save</button>
                           </div>
                         </div>
+
+			            <!-- Code for Thumbs. -->
+			            <div class="thumbs">
+			              <span class="thumb_up">
+			                <span v-if="is_logged_in" class="toggle_tUp"
+			                      v-on:mouseover="thumbUp_mouseover(post._idx, reply._idx);"
+			                      v-on:click="thumbUp_click(post._idx, reply._idx);"
+			                      v-on:mouseout="thumbUp_mouseout(post._idx, reply._idx);">
+			                  <i v-if="reply._tUp" class="fa fa-thumbs-up" 
+			                  v-bind:class="{changed: reply._tUp_black === false}"></i>
+			                  <i v-if="!reply._tUp" class="fa fa-thumbs-o-up" 
+			                  v-bind:class="{changed: reply._tUp_black === false}"></i>
+			                </span>
+			              </span>
+			              <span class="thumb_down">
+			                <span v-if="is_logged_in" class="toggle_tDown"
+			                      v-on:mouseover="thumbDown_mouseover(post._idx, reply._idx);"
+			                      v-on:click="thumbDown_click(post._idx, reply._idx);"
+			                      v-on:mouseout="thumbDown_mouseout(post._idx, reply._idx);">
+			                  <i v-if="reply._tDown" class="fa fa-thumbs-down"
+			                  	v-bind:class="{changed: reply._tDown_black === false}"></i>
+			                  <i v-if="!reply._tDown" class="fa fa-thumbs-o-down" 
+			                  	v-bind:class="{changed: reply._tDown_black === false}"></i>
+			                </span>
+			              </span>
+			              <span class="thumb_count">Thumb count: ${reply._count}</span>
+			            </div>
+		              <!-- Code for Thumbs end. -->
                       </div>
                     </div>
                   </div>
                 </div> 
-                <button v-show="!post.show_reply" v-on:click="get_replies(post._idx); show_reply_toggle(post._idx)">Reply / Show Replies</button>
+                <button v-show="!post.show_reply" v-on:click="get_replies(post._idx); show_reply_toggle(post._idx)">Add / Show Reviews</button>
               </div>
 	          </div>
       </div>

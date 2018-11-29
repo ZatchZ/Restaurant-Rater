@@ -41,7 +41,6 @@ var app = function() {
                 self.vue.post_list.unshift(new_post);
                 // We re-enumerate the array.
                 self.get_posts();
-                self.process_posts();
                 self.vue.show_form = false;
             });
         // If you put code here, it is run BEFORE the call comes back.
@@ -65,26 +64,10 @@ var app = function() {
         // We add the _idx attribute to the posts. 
         enumerate(self.vue.post_list);
         self.vue.post_list.map(function (e) {
-
-            //counting the current user's thumbs, if any
-            Vue.set(e, '_count', 0);
-            if(e.thumb == 'u') e._count++;
-            if(e.thumb == 'd') e._count--;
-
-            //counting the amount of thumbs by other users, if any
-            $.getJSON(thumb_count_url, {post_id: e.id}, function (data) {
-                a = data.thumbs;
-                cnt = 0
-                for(var i = 0; i < a.length; ++i){
-                    if(a[i] == 'u') cnt++;
-                    if(a[i] == 'd') cnt--;
-                }
-                e._count += cnt;
-            })
-
+            //editing
             Vue.set(e, 'editable', (curr_user == e.post_author));
             Vue.set(e, 'editing', false);
-
+            //replies
             Vue.set(e, 'show_reply', false);
             Vue.set(e, 'replying', false);
             Vue.set(e, 'reply_content', '');
@@ -92,10 +75,7 @@ var app = function() {
             Vue.set(e, '_display_ratings', [0,0,0]);
             Vue.set(e, 'reply_list', []);
             
-            Vue.set(e, '_tUp', (e.thumb == 'u'));
-            Vue.set(e, '_tDown', (e.thumb == 'd'));
-            Vue.set(e, '_tUp_black', true);
-            Vue.set(e, '_tDown_black', true);
+
         });
     };
 
@@ -140,6 +120,25 @@ var app = function() {
             Vue.set(e, 'editing', false);
             // Number of stars to display.
             Vue.set(e, '_arr_num_stars', e.ratings);
+            // thumbs stuff
+            //counting the current user's thumbs, if any
+            Vue.set(e, '_count', 0);
+            if(e.thumb == 'u') e._count++;
+            if(e.thumb == 'd') e._count--;
+            //counting the amount of thumbs by other users, if any
+            $.getJSON(thumb_count_url, {reply_id: e.id}, function (data) {
+                a = data.thumbs;
+                cnt = 0
+                for(var i = 0; i < a.length; ++i){
+                    if(a[i] == 'u') cnt++;
+                    if(a[i] == 'd') cnt--;
+                }
+                e._count += cnt;
+            })
+            Vue.set(e, '_tUp', (e.thumb == 'u'));
+            Vue.set(e, '_tDown', (e.thumb == 'd'));
+            Vue.set(e, '_tUp_black', true);
+            Vue.set(e, '_tDown_black', true);
         });
     };
 
@@ -169,7 +168,6 @@ var app = function() {
                 };
                 p.reply_list.unshift(new_reply);
                 self.get_replies(post_idx);
-                self.process_replies(post_idx);
                 p.replying = false;
             });
     };
@@ -256,78 +254,84 @@ var app = function() {
     };
 
     // code for thumbs
-    self.thumbUp_mouseover = function (post_idx) {
+    self.thumbUp_mouseover = function (post_idx, reply_idx) {
         var p = self.vue.post_list[post_idx];
-        p._tUp = true;
-        p._tDown = false;
+        var r = p.reply_list[reply_idx];
+        r._tUp = true;
+        r._tDown = false;
 
-        p._tUp_black = (p.thumb == 'u');
-        p._tDown_black = (p.thumb == 'd');
+        r._tUp_black = (r.thumb == 'u');
+        r._tDown_black = (r.thumb == 'd');
     };
-    self.thumbUp_mouseout = function (post_idx) {
+    self.thumbUp_mouseout = function (post_idx, reply_idx) {
         var p = self.vue.post_list[post_idx];
-        p._tUp = (p.thumb == 'u');
-        p._tDown = (p.thumb == 'd');
+        var r = p.reply_list[reply_idx];
+        r._tUp = (r.thumb == 'u');
+        r._tDown = (r.thumb == 'd');
         
 
-        p._tUp_black = true;
-        p._tDown_black = true;
+        r._tUp_black = true;
+        r._tDown_black = true;
     };
-    self.thumbDown_mouseover = function (post_idx) {
+    self.thumbDown_mouseover = function (post_idx, reply_idx) {
         var p = self.vue.post_list[post_idx];
-        p._tUp = false;
-        p._tDown = true;
+        var r = p.reply_list[reply_idx];
+        r._tUp = false;
+        r._tDown = true;
 
-        p._tUp_black = (p.thumb == 'u');
-        p._tDown_black = (p.thumb == 'd');
+        r._tUp_black = (r.thumb == 'u');
+        r._tDown_black = (r.thumb == 'd');
     };
-    self.thumbDown_mouseout = function (post_idx) {
+    self.thumbDown_mouseout = function (post_idx, reply_idx) {
         var p = self.vue.post_list[post_idx];
-        p._tUp = (p.thumb == 'u');
-        p._tDown = (p.thumb == 'd');
+        var r = p.reply_list[reply_idx];
+        r._tUp = (r.thumb == 'u');
+        r._tDown = (r.thumb == 'd');
         
-        p._tUp_black = true;
-        p._tDown_black = true;
+        r._tUp_black = true;
+        r._tDown_black = true;
     };
-    self.thumbUp_click = function (post_idx) {
+    self.thumbUp_click = function (post_idx, reply_idx) {
         var p = self.vue.post_list[post_idx];
-        if(p.thumb == 'u'){
+        var r = p.reply_list[reply_idx];
+        if(r.thumb == 'u'){
            t = false; 
-           p.thumb = null
-           p._count--;
+           r.thumb = null
+           r._count--;
         } 
         else {
             t = true;
-            p.thumb = 'u'
-            p._count++;
+            r.thumb = 'u'
+            r._count++;
         }
         // We need to post back the change to the server.
         $.post(thumb_up_url, {
-            post_id: p.id,
+            reply_id: r.id,
             thumb: t
         });
-        p._tUp_black = (p.thumb == 'u');
-        p._tDown_black = (p.thumb == 'd');
+        r._tUp_black = (r.thumb == 'u');
+        r._tDown_black = (r.thumb == 'd');
     };
-    self.thumbDown_click = function (post_idx) {
+    self.thumbDown_click = function (post_idx, reply_idx) {
         var p = self.vue.post_list[post_idx];
-        if(p.thumb == 'd'){
+        var r = p.reply_list[reply_idx];
+        if(r.thumb == 'd'){
            t = false; 
-           p.thumb = null
-           p._count++;
+           r.thumb = null
+           r._count++;
         } 
         else {
             t = true;
-            p.thumb = 'd'
-            p._count--;
+            r.thumb = 'd'
+            r._count--;
         }
         // We need to post back the change to the server.
         $.post(thumb_down_url, {
-            post_id: p.id,
+            reply_id: r.id,
             thumb: t
         });
-        p._tUp_black = (p.thumb == 'u');
-        p._tDown_black = (p.thumb == 'd');
+        r._tUp_black = (r.thumb == 'u');
+        r._tDown_black = (r.thumb == 'd');
     };
 
     // Complete as needed.
