@@ -88,6 +88,8 @@ var app = function() {
             Vue.set(e, 'show_reply', false);
             Vue.set(e, 'replying', false);
             Vue.set(e, 'reply_content', '');
+            Vue.set(e, 'reply_ratings', [0,0,0]);
+            Vue.set(e, '_display_ratings', [0,0,0]);
             Vue.set(e, 'reply_list', []);
             
             Vue.set(e, '_tUp', (e.thumb == 'u'));
@@ -146,18 +148,25 @@ var app = function() {
         var p = self.vue.post_list[post_idx];
         $.web2py.disableElement($("#add-reply"));
         var sent_content = p.reply_content; // Makes a copy 
+        var sent_ratings = p.reply_ratings;
         $.post(add_reply_url,
             {
                 post_id: p.id,
-                reply_content: p.reply_content
+                reply_content: p.reply_content,
+                r0: p.reply_ratings[0],
+                r1: p.reply_ratings[1],
+                r2: p.reply_ratings[2]
             },
             function (data) {
-                $.web2py.enableElement($("#add-post"));
+                $.web2py.enableElement($("#add-reply"));
                 p.reply_content = "";
+                p._display_ratings = [0,0,0];
+                p.reply_ratings = [0,0,0];
                 var new_reply = {
                     id: data.reply_id,
                     reply_author: curr_user,
-                    reply_content: sent_content
+                    reply_content: sent_content,
+                    ratings: sent_ratings
                 };
                 p.reply_list.unshift(new_reply);
                 self.get_replies(post_idx);
@@ -165,6 +174,7 @@ var app = function() {
                 p.replying = false;
             });
     };
+
     self.edit_reply = function (post_idx, reply_idx) {
         var p = self.vue.post_list[post_idx];
         var r = p.reply_list[reply_idx];
@@ -182,18 +192,46 @@ var app = function() {
                 r.editing = false;
             });
     };
-    // Code for star ratings.
+    // Code for creating stars on new replies.
+    // We probably don't need redundant code if someone wants to optimize this
+    self.new_reply_stars_out = function (post_idx) {
+        // Out of the star rating; set number of visible back to rating.
+        var p = self.vue.post_list[post_idx];
+        p._display_ratings = p.reply_ratings;
+    };
+
+    self.new_reply_stars_over = function(post_idx, arr_idx, star_idx) {
+        // Hovering over a star; we show that as the number of active stars.
+        var p = self.vue.post_list[post_idx];
+        //workaround for stars not updating
+        var temp_arr = [1,1,1]
+        for (i in p.reply_ratings){
+            temp_arr[i] = p.reply_ratings[i]
+        }
+        temp_arr[arr_idx] = star_idx;
+        p._display_ratings = temp_arr;
+    };
+
+    self.new_reply_set_stars = function(post_idx, arr_idx, star_idx) {
+        // The user has set this as the number of stars for the post.
+        var p = self.vue.post_list[post_idx];
+        p._display_ratings[arr_idx] = star_idx;
+        p.reply_ratings[arr_idx] = star_idx;
+    };
+
+    // Code for star ratings on existing replies.
     self.stars_out = function (post_idx, reply_idx) {
-        // // Out of the star rating; set number of visible back to rating.
+        // Out of the star rating; set number of visible back to rating.
         var p = self.vue.post_list[post_idx];
         var r = p.reply_list[reply_idx];
         r._arr_num_stars = r.ratings;
     };
 
     self.stars_over = function(post_idx, reply_idx, arr_idx, star_idx) {
-        // // Hovering over a star; we show that as the number of active stars.
+        // Hovering over a star; we show that as the number of active stars.
         var p = self.vue.post_list[post_idx];
         var r = p.reply_list[reply_idx];
+        if (!r.editing) return;
         //workaround for stars not updating
         var temp_arr = [1,1,1]
         for (i in r.ratings){
@@ -207,6 +245,7 @@ var app = function() {
         // The user has set this as the number of stars for the post.
         var p = self.vue.post_list[post_idx];
         var r = p.reply_list[reply_idx];
+        if (!r.editing) return;
         r._arr_num_stars[arr_idx] = star_idx;
         r.ratings[arr_idx] = star_idx;
         // Sends the rating to the server.
@@ -317,6 +356,9 @@ var app = function() {
             add_reply: self.add_reply,
             edit_reply: self.edit_reply,
             save_reply_edit: self.save_reply_edit,
+            new_reply_stars_out: self.new_reply_stars_out,
+            new_reply_stars_over: self.new_reply_stars_over,
+            new_reply_set_stars: self.new_reply_set_stars,
             // Star ratings.
             stars_out: self.stars_out,
             stars_over: self.stars_over,

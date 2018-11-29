@@ -53,9 +53,13 @@ def get_post_list():
 
 @auth.requires_signature()
 def add_reply():
+
     reply_id = db.reply.insert(
         post_id=request.vars.post_id,
         reply_content=request.vars.reply_content,
+        rating0=request.vars.r0,
+        rating1=request.vars.r1,
+        rating2=request.vars.r2
     )
     # We return the id of the new post, so we can insert it along all the others.
     return response.json(dict(reply_id=reply_id))
