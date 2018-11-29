@@ -48,7 +48,7 @@ db.define_table('thumb',
                 )
 
 
-db.reply.post_id.readable = db.reply.post_id.writable = False
-db.reply.reply_author.readable = db.reply.reply_author.writable = False
-db.reply.reply_time.readable = db.reply.reply_time.writable = False
+# db.reply.post_id.readable = db.reply.post_id.writable = False
+# db.reply.reply_author.readable = db.reply.reply_author.writable = False
+# db.reply.reply_time.readable = db.reply.reply_time.writable = False
 # db.reply.id.readable = False

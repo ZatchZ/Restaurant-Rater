@@ -118,6 +118,7 @@ var app = function() {
     self.show_reply_toggle = function (post_idx) {
         var p = self.vue.post_list[post_idx];
         p.show_reply = !p.show_reply;
+        console.clear()
     };
     self.get_replies = function(post_idx) {
         var p = self.vue.post_list[post_idx];
@@ -137,7 +138,7 @@ var app = function() {
             Vue.set(e, 'editable', (curr_user == e.reply_author));
             Vue.set(e, 'editing', false);
             // Number of stars to display.
-            Vue.set(e, '_arr_num_stars', [e.rating0, e.rating1, e.rating2]);
+            Vue.set(e, '_arr_num_stars', e.ratings);
         });
     };
 
@@ -183,23 +184,23 @@ var app = function() {
     };
     // Code for star ratings.
     self.stars_out = function (post_idx, reply_idx) {
-        // Out of the star rating; set number of visible back to rating.
+        // // Out of the star rating; set number of visible back to rating.
         var p = self.vue.post_list[post_idx];
         var r = p.reply_list[reply_idx];
-
-        r._arr_num_stars[0] = r.rating0;
-        r._arr_num_stars[1] = r.rating1;
-        r._arr_num_stars[2] = r.rating2;
+        r._arr_num_stars = r.ratings;
     };
 
     self.stars_over = function(post_idx, reply_idx, arr_idx, star_idx) {
-
-        //console.log(post_idx, reply_idx, arr_idx, star_idx)
-        // Hovering over a star; we show that as the number of active stars.
+        // // Hovering over a star; we show that as the number of active stars.
         var p = self.vue.post_list[post_idx];
         var r = p.reply_list[reply_idx];
-        console.log(r.rating0, r.rating1, r.rating2)
-        r._arr_num_stars[arr_idx] = star_idx;
+        //workaround for stars not updating
+        var temp_arr = [1,1,1]
+        for (i in r.ratings){
+            temp_arr[i] = r.ratings[i]
+        }
+        temp_arr[arr_idx] = star_idx;
+        r._arr_num_stars = temp_arr;
     };
 
     self.set_stars = function(post_idx, reply_idx, arr_idx, star_idx) {
@@ -207,6 +208,7 @@ var app = function() {
         var p = self.vue.post_list[post_idx];
         var r = p.reply_list[reply_idx];
         r._arr_num_stars[arr_idx] = star_idx;
+        r.ratings[arr_idx] = star_idx;
         // Sends the rating to the server.
         $.post(set_stars_url, {
             reply_id: r.id,
@@ -301,7 +303,8 @@ var app = function() {
             post_list: [],
             show_form: false,
             star_indices: [1, 2, 3, 4, 5],
-            rating_strings: ["I forgot", "The rating", "Criterias"]
+            rating_strings: ["1", "2", "3"]
+            // rating_strings: ["I forgot", "The rating", "Criterias"]
         },
         methods: {
             // posts

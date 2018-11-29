@@ -76,9 +76,7 @@ def get_reply_list():
             id=row.id,
             reply_author=row.reply_author,
             reply_content=row.reply_content,
-            rating0 = row.rating0,
-            rating1 = row.rating1,
-            rating2 = row.rating2
+            ratings = [row.rating0, row.rating1, row.rating2]
         ))
     # For homogeneity, we always return a dictionary.
     return response.json(dict(reply_list=results))
