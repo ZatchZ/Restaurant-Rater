@@ -120,7 +120,6 @@ var app = function() {
     self.show_reply_toggle = function (post_idx) {
         var p = self.vue.post_list[post_idx];
         p.show_reply = !p.show_reply;
-        console.clear()
     };
     self.get_replies = function(post_idx) {
         var p = self.vue.post_list[post_idx];

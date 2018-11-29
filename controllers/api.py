@@ -102,19 +102,13 @@ def all_thumbs():
 def thumb_up():
     post_id = int(request.vars.post_id)
     thumb_status = request.vars.thumb.lower().startswith('t');
-    if thumb_status:
-        db.thumb.update_or_insert(
+    if thumb_status: state = 'u' 
+    else: state = None
+    db.thumb.update_or_insert(
             (db.thumb.post_id == post_id) & (db.thumb.user_email == auth.user.email),
             post_id = post_id,
             user_email = auth.user.email,
-            thumb_state = 'u'
-        )
-    else:
-        db.thumb.update_or_insert(
-            (db.thumb.post_id == post_id) & (db.thumb.user_email == auth.user.email),
-            post_id = post_id,
-            user_email = auth.user.email,
-            thumb_state = None
+            thumb_state = state
         )
     return "ok" # Might be useful in debugging.
 
@@ -122,19 +116,13 @@ def thumb_up():
 def thumb_down():
     post_id = int(request.vars.post_id)
     like_status = request.vars.thumb.lower().startswith('t');
-    if like_status:
-        db.thumb.update_or_insert(
+    if thumb_status: state = 'd' 
+    else: state = None
+    db.thumb.update_or_insert(
             (db.thumb.post_id == post_id) & (db.thumb.user_email == auth.user.email),
             post_id = post_id,
             user_email = auth.user.email,
-            thumb_state = 'd'
-        )
-    else:
-        db.thumb.update_or_insert(
-            (db.thumb.post_id == post_id) & (db.thumb.user_email == auth.user.email),
-            post_id = post_id,
-            user_email = auth.user.email,
-            thumb_state = None
+            thumb_state = state
         )
     return "ok" # Might be useful in debugging.
 

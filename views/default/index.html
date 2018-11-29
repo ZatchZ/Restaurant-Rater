@@ -78,6 +78,7 @@
 	          	</div>
 	     	  </div>
 	          <div class="attributes">
+
 	            <!-- Code for Thumbs. -->
 	            <div class="thumbs">
 	              <span class="thumb_up">
@@ -100,6 +101,7 @@
 	              </span>
 	              <span class="thumb_count">Thumb count: ${post._count}</span>
 	            </div>
+              <!-- Code for Thumbs end. -->
               
               <!-- Code for Replies. -->
               <div class="replies_div">
@@ -141,7 +143,6 @@
                       <div class="reply_author">Author: ${reply.reply_author}</div>
                       <div class="reply_content">
                       	<!-- Code for star ratings. -->
-        				  <!-- <div v-if="is_logged_in" class="star_rating"> -->
         				  	<div v-for="starr_idx in [0,1,2]">
         				  	  ${rating_strings[starr_idx]}
               			  	  <span v-on:mouseout="stars_out(post._idx, reply._idx)">
@@ -153,7 +154,6 @@
                 			    </span>
               				  </span>
               				</div>
-            			  <!-- </div> -->
 						  <!-- Code for star ratings ends. -->
                         <div v-if="!reply.editing">
                           <div>Content: ${reply.reply_content}</div>
