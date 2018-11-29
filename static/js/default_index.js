@@ -74,11 +74,29 @@ var app = function() {
             Vue.set(e, 'reply_ratings', [0,0,0]);
             Vue.set(e, '_display_ratings', [0,0,0]);
             Vue.set(e, 'reply_list', []);
-            
+            //stars
+            Vue.set(e, 'avg_ratings', [0,0,0]);
+            self.avg_post_stars(e);
 
         });
     };
-
+    self.avg_post_stars = function (p) {
+        $.getJSON(get_all_stars_url, {post_id: p.id}, function (data) {
+            p.avg_ratings = [0,0,0];
+            a = data.stars;
+            len = a.length;
+            for(var i = 0; i < len; ++i){
+                for (var k in a[i]){
+                    p.avg_ratings[k] += a[i][k];
+                }
+            }
+            for(var j = 0; j < p.avg_ratings.length; ++j){
+                p.avg_ratings[j] /= len;
+                if(isNaN(p.avg_ratings[j])) p.avg_ratings[j] = 0;
+            }
+            console.log("post:", p._idx, "ratings:",p.avg_ratings);
+        })
+    }
     self.edit_post = function (post_idx) {
         var p = self.vue.post_list[post_idx];
         p.editing = true;
@@ -168,6 +186,7 @@ var app = function() {
                 };
                 p.reply_list.unshift(new_reply);
                 self.get_replies(post_idx);
+                self.avg_post_stars(p)
                 p.replying = false;
             });
     };
@@ -186,6 +205,7 @@ var app = function() {
                 reply_content: r.reply_content
             },
             function (data) {
+                self.avg_post_stars(p)
                 r.editing = false;
             });
     };

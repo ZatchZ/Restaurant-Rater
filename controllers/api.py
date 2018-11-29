@@ -22,33 +22,20 @@ def edit_post():
 
 def get_post_list():
     results = []
-    if auth.user is None:
-        # Not logged in.
-        rows = db().select(db.post.ALL, orderby=~db.post.post_time)
-        for row in rows:
-            results.append(dict(
-                id=row.id,
-                post_title=row.post_title,
-                post_content=row.post_content,
-                post_author=row.post_author,
-                # thumb = None,
-            ))
-    else:
-        # Logged in.
-        rows = db().select(db.post.ALL,
-                            # db.thumb.ALL,
-                            # left=[
-                            #     db.thumb.on((db.thumb.post_id == db.post.id) & (db.thumb.user_email == auth.user.email)),
-                            # ],
-                            orderby=~db.post.post_time)
-        for row in rows:
-            results.append(dict(
-                id=row.id,
-                post_title=row.post_title,
-                post_content=row.post_content,
-                post_author=row.post_author,
-                # thumb = None if row.thumb.id is None else row.thumb.thumb_state,
-            ))
+    rows = db().select(db.post.ALL,
+                        # db.thumb.ALL,
+                        # left=[
+                        #     db.thumb.on((db.thumb.post_id == db.post.id) & (db.thumb.user_email == auth.user.email)),
+                        # ],
+                        orderby=~db.post.post_time)
+    for row in rows:
+        results.append(dict(
+            id=row.id,
+            post_title=row.post_title,
+            post_content=row.post_content,
+            post_author=row.post_author,
+            # thumb = None if row.thumb.id is None else row.thumb.thumb_state,
+        ))
     # For homogeneity, we always return a dictionary.
     return response.json(dict(post_list=results))
 
@@ -81,7 +68,6 @@ def get_reply_list():
                         ],
                         orderby=~db.reply.reply_time)
     for row in rows:
-        print row
         results.append(dict(
             id=row.reply.id,
             reply_content=row.reply.reply_content,
@@ -131,6 +117,21 @@ def thumb_down():
             thumb_state = state
         )
     return "ok" # Might be useful in debugging.
+
+
+#code for stars
+def all_stars():
+    post_id = int(request.vars.post_id)
+    # results = []
+
+    rows = db(db.reply.post_id == post_id).select(db.reply.rating0, db.reply.rating1, db.reply.rating2)
+    # for row in rows:
+    #     results.append(dict(
+    #         ratings = [row.rating0, row.rating1, row.rating2]
+    #     ))
+    results = [[r.rating0, r.rating1 ,r.rating2] for r in rows]
+    # For homogeneity, we always return a dictionary.
+    return response.json(dict(stars=results))
 
 def set_stars():
     """Sets the star rating of a post."""

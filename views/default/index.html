@@ -17,6 +17,7 @@
     var thumb_down_url = "{{=URL('api', 'thumb_down', user_signature=True)}}";
     //stars
     var set_stars_url = "{{=URL('api', 'set_stars', user_signature=True)}}";
+    var get_all_stars_url = "{{=URL('api', 'all_stars')}}";
     //user misc
     var is_logged_in = {{='false' if auth.user is None else 'true'}};
     var curr_user = "{{=auth.user.email if auth.user else None}}";
@@ -64,6 +65,15 @@
 	          <div class="post_title" v-if="!post.editing">${post.post_title}</div>
 	          <textarea v-if="post.editing" v-model="post.post_title"></textarea>
 	          <div class="post_content">
+      			<!-- Code for star ratings. -->
+                <div v-for="starr_idx in [0,1,2]">
+			  	  ${rating_strings[starr_idx]}
+    			    <span v-for="idx in star_indices">
+        		  	  <i v-if="idx <= post.avg_ratings[starr_idx]" class="fa fa-star"></i>
+        		  	  <i v-if="idx > post.avg_ratings[starr_idx]" class="fa fa-star-o"></i>
+    			    </span>
+				</div>
+				<!-- Code for star ratings end. -->
 	          	<div v-if="!post.editing">
 	          	  <div>${post.post_content}</div>
 	          	    <div class="start-edit" v-if="post.editable">
@@ -89,6 +99,7 @@
                       <div class="form">
                         <textarea v-model="post.reply_content" placeholder="Enter the content of your reply"></textarea>
                         And your ratings:
+                        <!-- Code for star ratings. -->
                         <div v-for="starr_idx in [0,1,2]">
     				  	  ${rating_strings[starr_idx]}
           			  	  <span v-on:mouseout="new_reply_stars_out(post._idx)">
@@ -100,6 +111,7 @@
             			    </span>
           				  </span>
       					</div>
+      					<!-- Code for star ratings end. -->
                       </div>
                     </div>
                     <div class="container form_row">
