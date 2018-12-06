@@ -24,7 +24,7 @@
 </script>
         <link href="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
 <script src="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
-<script src="//code.jquery.com/jquery-1.11.1.min.js"></script>
+<!-- <script src="//code.jquery.com/jquery-1.11.1.min.js"></script> -->
 {{end}}
 
 
@@ -34,8 +34,8 @@
     <!-- Marketing messaging and featurettes
     ================================================== -->
     <!-- Wrap the rest of the page in another container to center all the content. -->
-
-    <div class="container marketing">
+<div id="vue-div" class="display:none">
+    <div class="container marketing" v-if="page_state === 'market'">
 
       <!-- Three columns of text below the carousel -->
       <div class="row">
@@ -193,178 +193,178 @@
       </footer>
 
     </div><!-- /.container -->
-
-<div class="main_content">
-
-    <div id="vue-div" class="display:none">
-      <div id="add_post" style="display:none">
-        <div v-if="show_form">
-          <div class="container form_row">
-            <div class="label quarter">
-              Title:
-            </div>
-            <div class="form threequarters">
-              <input v-model="form_title" placeholder="Enter the post title"/>
-            </div>
+  <div class="main_content" v-if="page_state === 'posts'">
+    <div id="add_post" style="display:none">
+      <div v-if="show_form">
+        <div class="container form_row">
+          <div class="label quarter">
+            Title:
           </div>
-          <div class="container form_row">
-            <div class="label quarter">
-              Content:
-            </div>
-            <div class="form threequarters">
-              <textarea v-model="form_content" placeholder="Enter the content of your post"></textarea>
-            </div>
+          <div class="form threequarters">
+            <input v-model="form_title" placeholder="Enter the post title"/>
           </div>
-          <div class="container form_row"><div class="quarter"></div>
-            <div class="threequarters">
-              <div class="submit">
-                <button id="add-post" v-on:click="add_post">Submit</button>
-              </div>
+        </div>
+        <div class="container form_row">
+          <div class="label quarter">
+            Content:
+          </div>
+          <div class="form threequarters">
+            <textarea v-model="form_content" placeholder="Enter the content of your post"></textarea>
+          </div>
+        </div>
+        <div class="container form_row"><div class="quarter"></div>
+          <div class="threequarters">
+            <div class="submit">
+              <button id="add-post" v-on:click="add_post">Submit</button>
             </div>
           </div>
         </div>
-        <button v-show="!show_form" v-on:click="show_form = true">Add Post <i class="fa fa-plus-circle"></i></button>
       </div>
+      <button v-show="!show_form" v-on:click="show_form = true">Add Post <i class="fa fa-plus-circle"></i></button>
+    </div>
 
-      <!-- Message in case there are no posts. -->
-      <div v-if="post_list.length === 0">There are no posts.</div>
+    <!-- Message in case there are no posts. -->
+    <div v-if="post_list.length === 0">There are no posts.</div>
 
-      <!-- We display the posts. -->
-      <div id="post_list">
-        <div class="post_div" v-for="post in post_list">
-	          <div class="post_title" v-if="!post.editing">${post.post_title}</div>
-	          <textarea v-if="post.editing" v-model="post.post_title"></textarea>
-	          <div class="post_content">
-      			<!-- Code for star ratings. -->
-                <div v-for="starr_idx in [0,1,2]">
-			  	  ${rating_strings[starr_idx]}
-    			    <span v-for="idx in star_indices">
-        		  	  <i v-if="idx <= post.avg_ratings[starr_idx]" class="fa fa-star"></i>
-        		  	  <i v-if="idx > post.avg_ratings[starr_idx]" class="fa fa-star-o"></i>
-    			    </span>
-				</div>
-				<!-- Code for star ratings end. -->
-	          	<div v-if="!post.editing">
-	          	  <div>${post.post_content}</div>
-	          	    <div class="start-edit" v-if="post.editable">
-                  	  <button id="edit" v-on:click="edit_post(post._idx)">Edit <i class="fa fa-pencil-square-o"></i></button>
-              	  </div>
-	          	</div>
-	          	<div v-if="post.editing">
-	          	  <textarea v-model="post.post_content"></textarea>
-	          	  <div class="editing">
-                  <button id="save-edit" v-on:click="save_edit(post._idx)">Save</button>
-              	  </div>
-	          	</div>
-	     	  </div>
-	          <div class="attributes">
+    <!-- We display the posts. -->
+    <div id="post_list">
+      <div class="post_div" v-for="post in post_list">
+          <div class="post_title" v-if="!post.editing">${post.post_title}</div>
+          <textarea v-if="post.editing" v-model="post.post_title"></textarea>
+          <div class="post_content">
+    			<!-- Code for star ratings. -->
+            <div v-for="starr_idx in [0,1,2]">
+		  	      ${rating_strings[starr_idx]}
+  			      <span v-for="idx in star_indices">
+      		  	  <i v-if="idx <= post.avg_ratings[starr_idx]" class="fa fa-star"></i>
+      		  	  <i v-if="idx > post.avg_ratings[starr_idx]" class="fa fa-star-o"></i>
+  			      </span>
+			      </div>
+			    <!-- Code for star ratings end. -->
+          	<div v-if="!post.editing">
+          	  <div>${post.post_content}</div>
+          	  <div class="start-edit" v-if="post.editable">
+                	  <button id="edit" v-on:click="edit_post(post._idx)">Edit <i class="fa fa-pencil-square-o"></i></button>
+            	</div>
+          	</div>
+          	<div v-if="post.editing">
+          	  <textarea v-model="post.post_content"></textarea>
+          	  <div class="editing">
+                <button id="save-edit" v-on:click="save_edit(post._idx)">Save</button>
+            	</div>
+          	</div>
+     	    </div>
+          <div class="attributes">
 
-              <!-- Code for Replies. -->
-              <div class="replies_div">
-                <div v-if="post.show_reply">
-                  <button v-on:click="show_reply_toggle(post._idx)">Hide Reviews</button>
-                  <button v-if="is_logged_in" v-show="!post.replying" v-on:click="post.replying = true">Add Review <i class="fa fa-plus-circle"></i></button>
-                  <div v-if="post.replying">
-                    <div class="container form_row">
-                      <div class="form">
-                        <textarea v-model="post.reply_content" placeholder="Enter the content of your reply"></textarea>
-                        And your ratings:
-                        <!-- Code for star ratings. -->
-                        <div v-for="starr_idx in [0,1,2]">
-    				  	  ${rating_strings[starr_idx]}
-          			  	  <span v-on:mouseout="new_reply_stars_out(post._idx)">
-            			    <span v-on:mouseover="new_reply_stars_over(post._idx, starr_idx, idx)"
-                  		  	  	  v-on:click="new_reply_set_stars(post._idx, starr_idx, idx)"
-                  		  	  	  v-for="idx in star_indices">
-                		  	  <i v-if="idx <= post._display_ratings[starr_idx]" class="fa fa-star"></i>
-                		  	  <i v-if="idx > post._display_ratings[starr_idx]" class="fa fa-star-o"></i>
-            			    </span>
-          				  </span>
-      					</div>
-      					<!-- Code for star ratings end. -->
-                      </div>
-                    </div>
-                    <div class="container form_row">
-                      <div class="submit">
-                        <button id="add-reply" v-on:click="add_reply(post._idx)">Submit</button>
-                      </div>
+            <!-- Code for Replies. -->
+            <div class="replies_div">
+              <div v-if="post.show_reply">
+                <button v-on:click="show_reply_toggle(post._idx)">Hide Reviews</button>
+                <button v-if="is_logged_in" v-show="!post.replying" v-on:click="post.replying = true">Add Review <i class="fa fa-plus-circle"></i></button>
+                <div v-if="post.replying">
+                  <div class="container form_row">
+                    <div class="form">
+                      <textarea v-model="post.reply_content" placeholder="Enter the content of your reply"></textarea>
+                      And your ratings:
+                      <!-- Code for star ratings. -->
+                      <div v-for="starr_idx in [0,1,2]">
+  				  	          ${rating_strings[starr_idx]}
+            			  	  <span v-on:mouseout="new_reply_stars_out(post._idx)">
+                			    <span v-on:mouseover="new_reply_stars_over(post._idx, starr_idx, idx)"
+                      		  	  v-on:click="new_reply_set_stars(post._idx, starr_idx, idx)"
+                      		  	  v-for="idx in star_indices">
+                    		  	  <i v-if="idx <= post._display_ratings[starr_idx]" class="fa fa-star"></i>
+                    		  	  <i v-if="idx > post._display_ratings[starr_idx]" class="fa fa-star-o"></i>
+                			    </span>
+            				    </span>
+    					        </div>
+    					        <!-- Code for star ratings end. -->
                     </div>
                   </div>
-
-                  <!-- Message in case there are no replies. -->
-                  <div v-if="post.reply_list.length === 0">There are no reviews.</div>
-
-                  <!-- We display the replies. -->
-                  <div id="reply_list">
-                    <span v-if="post.reply_list.length > 0">Reviews:</span>
-                    <div class="reply_div" v-for="reply in post.reply_list">
-                      <div class="reply_author">Author: ${reply.reply_author}</div>
-                      <div class="reply_content">
-                      	<!-- Code for star ratings. -->
-        				  	<div v-for="starr_idx in [0,1,2]">
-        				  	  ${rating_strings[starr_idx]}
-              			  	  <span v-on:mouseout="stars_out(post._idx, reply._idx)">
-                			    <span v-on:mouseover="stars_over(post._idx, reply._idx, starr_idx, idx)"
-                      		  	  	  v-on:click="set_stars(post._idx, reply._idx, starr_idx, idx)"
-                      		  	  	  v-for="idx in star_indices">
-                    		  	  <i v-if="idx <= reply._arr_num_stars[starr_idx]" class="fa fa-star"></i>
-                    		  	  <i v-if="idx > reply._arr_num_stars[starr_idx]" class="fa fa-star-o"></i>
-                			    </span>
-              				  </span>
-              				</div>
-						  <!-- Code for star ratings ends. -->
-                        <div v-if="!reply.editing">
-                          <div>Content: ${reply.reply_content}</div>
-                          <div class="start-edit" v-if="reply.editable">
-                            <button id="edit" v-on:click="edit_reply(post._idx, reply._idx)">Edit <i class="fa fa-pencil-square-o"></i></button>
-                          </div>
-                        </div>
-
-                        <div v-if="reply.editing">
-                          <textarea v-model="reply.reply_content"></textarea>
-                          <div class="editing">
-                            <button id="save-edit" v-on:click="save_reply_edit(post._idx, reply._idx)">Save</button>
-                          </div>
-                        </div>
-
-			            <!-- Code for Thumbs. -->
-			            <div class="thumbs">
-			              <span class="thumb_up">
-			                <span class="toggle_tUp"
-			                      v-on:mouseover="thumbUp_mouseover(post._idx, reply._idx);"
-			                      v-on:click="thumbUp_click(post._idx, reply._idx);"
-			                      v-on:mouseout="thumbUp_mouseout(post._idx, reply._idx);">
-			                  <i v-if="reply._tUp" class="fa fa-thumbs-up"
-			                  v-bind:class="{changed: reply._tUp_black === false}"></i>
-			                  <i v-if="!reply._tUp" class="fa fa-thumbs-o-up"
-			                  v-bind:class="{changed: reply._tUp_black === false}"></i>
-			                </span>
-			              </span>
-			              <span class="thumb_countU"> ${reply._countU}</span>
-			              <span class="thumb_down">
-			                <span class="toggle_tDown"
-			                      v-on:mouseover="thumbDown_mouseover(post._idx, reply._idx);"
-			                      v-on:click="thumbDown_click(post._idx, reply._idx);"
-			                      v-on:mouseout="thumbDown_mouseout(post._idx, reply._idx);">
-			                  <i v-if="reply._tDown" class="fa fa-thumbs-down"
-			                  	v-bind:class="{changed: reply._tDown_black === false}"></i>
-			                  <i v-if="!reply._tDown" class="fa fa-thumbs-o-down"
-			                  	v-bind:class="{changed: reply._tDown_black === false}"></i>
-			                </span>
-			              </span>
-			              <span class="thumb_countD"> ${reply._countD}</span>
-			            </div>
-		              <!-- Code for Thumbs end. -->
-                      </div>
+                  <div class="container form_row">
+                    <div class="submit">
+                      <button id="add-reply" v-on:click="add_reply(post._idx)">Submit</button>
                     </div>
                   </div>
                 </div>
-                <button v-show="!post.show_reply" v-on:click="get_replies(post._idx); show_reply_toggle(post._idx)">Add / Show Reviews</button>
+
+                <!-- Message in case there are no replies. -->
+                <div v-if="post.reply_list.length === 0">There are no reviews.</div>
+
+                <!-- We display the replies. -->
+                <div id="reply_list">
+                  <span v-if="post.reply_list.length > 0">Reviews:</span>
+                  <div class="reply_div" v-for="reply in post.reply_list">
+                    <div class="reply_author">Author: ${reply.reply_author}</div>
+                    <div class="reply_content">
+                  <!-- Code for star ratings. -->
+      				  	<div v-for="starr_idx in [0,1,2]">
+      				  	  ${rating_strings[starr_idx]}
+            			  <span v-on:mouseout="stars_out(post._idx, reply._idx)">
+              			  <span v-on:mouseover="stars_over(post._idx, reply._idx, starr_idx, idx)"
+              		  	  	  v-on:click="set_stars(post._idx, reply._idx, starr_idx, idx)"
+              		  	  	  v-for="idx in star_indices">
+              		  	  <i v-if="idx <= reply._arr_num_stars[starr_idx]" class="fa fa-star"></i>
+              		  	  <i v-if="idx > reply._arr_num_stars[starr_idx]" class="fa fa-star-o"></i>
+              			  </span>
+            				</span>
+            			</div>
+					        <!-- Code for star ratings ends. -->
+                  <div v-if="!reply.editing">
+                    <div>Content: ${reply.reply_content}</div>
+                    <div class="start-edit" v-if="reply.editable">
+                      <button id="edit" v-on:click="edit_reply(post._idx, reply._idx)">Edit <i class="fa fa-pencil-square-o"></i></button>
+                    </div>
+                  </div>
+                  <div v-if="reply.editing">
+                    <textarea v-model="reply.reply_content"></textarea>
+                    <div class="editing">
+                      <button id="save-edit" v-on:click="save_reply_edit(post._idx, reply._idx)">Save</button>
+                    </div>
+                  </div>
+
+		            <!-- Code for Thumbs. -->
+		            <div class="thumbs">
+		              <span class="thumb_up">
+		                <span class="toggle_tUp"
+		                      v-on:mouseover="thumbUp_mouseover(post._idx, reply._idx);"
+		                      v-on:click="thumbUp_click(post._idx, reply._idx);"
+		                      v-on:mouseout="thumbUp_mouseout(post._idx, reply._idx);">
+		                  <i v-if="reply._tUp" class="fa fa-thumbs-up"
+		                  v-bind:class="{changed: reply._tUp_black === false}"></i>
+		                  <i v-if="!reply._tUp" class="fa fa-thumbs-o-up"
+		                  v-bind:class="{changed: reply._tUp_black === false}"></i>
+		                </span>
+		              </span>
+		              <span class="thumb_countU"> ${reply._countU}</span>
+		              <span class="thumb_down">
+		                <span class="toggle_tDown"
+		                      v-on:mouseover="thumbDown_mouseover(post._idx, reply._idx);"
+		                      v-on:click="thumbDown_click(post._idx, reply._idx);"
+		                      v-on:mouseout="thumbDown_mouseout(post._idx, reply._idx);">
+		                  <i v-if="reply._tDown" class="fa fa-thumbs-down"
+		                  	v-bind:class="{changed: reply._tDown_black === false}"></i>
+		                  <i v-if="!reply._tDown" class="fa fa-thumbs-o-down"
+		                  	v-bind:class="{changed: reply._tDown_black === false}"></i>
+		                </span>
+		              </span>
+		              <span class="thumb_countD"> ${reply._countD}</span>
+		            </div>
+	              <!-- Code for Thumbs end. -->
+                    </div>
+                  </div>
+                </div>
               </div>
-	          </div>
+              <button v-show="!post.show_reply" v-on:click="get_replies(post._idx); show_reply_toggle(post._idx)">Add / Show Reviews</button>
+            </div>
+          </div>
       </div>
     </div>
-
+  </div>
+<div class="container center">
+  <div class="quarter">
+    <button id="state-change" v-on:click="page_state = 'posts'">Posts</button>
+    <button id="state-change" v-on:click="page_state = 'market'">Marketing</button>
+  </div>
 </div>
-
 <script src="{{=URL('static', 'js/default_index.js')}}"></script>

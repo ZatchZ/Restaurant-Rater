@@ -371,8 +371,9 @@ var app = function() {
             post_list: [],
             show_form: false,
             star_indices: [1, 2, 3, 4, 5],
-            rating_strings: ["1", "2", "3"]
+            rating_strings: ["1", "2", "3"],
             // rating_strings: ["I forgot", "The rating", "Criterias"]
+            page_state: "test"
         },
         methods: {
             // posts
