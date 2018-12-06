@@ -193,7 +193,7 @@
 
     </div><!-- /.container -->
   <div class="main_content" v-if="page_state === 'posts'">
-    <div id="add_post" style="display:none">
+    <div id="add_post" v-if="is_logged_in">
       <div v-if="show_form">
         <div class="container form_row">
           <div class="label quarter">

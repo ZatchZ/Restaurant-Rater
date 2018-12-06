@@ -404,11 +404,6 @@ var app = function() {
 
     });
 
-    // If we are logged in, shows the form to add posts.
-    if (is_logged_in) {
-        $("#add_post").show();
-    }
-
     // Gets the posts.
     self.get_posts();
 
