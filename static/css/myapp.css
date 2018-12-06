@@ -14,6 +14,7 @@ div.main_content div.form_row {
 }
 /* line 13, ../sass/_main.scss */
 div.main_content div.post_div {
+  color:000000;
   margin: 4px;
   border: 1px black solid;
   background-color: #eeeeee;
@@ -33,8 +34,4 @@ div.main_content div.post_div .post_title {
 /* line 22, ../sass/_main.scss */
 div.main_content i.changed {
   color: #777777;
-}
-/* line 25, ../sass/_main.scss */
-div.main_content span.likers_list {
-  color: #7777cc;
 }
