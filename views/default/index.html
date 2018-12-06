@@ -211,6 +211,22 @@
             <textarea v-model="form_content" placeholder="Enter the content of your post"></textarea>
           </div>
         </div>
+        <div class="container form_row">
+          <div class="label quarter">
+            Category:
+          </div>
+          <div class="form threequarters">
+            <select v-model="form_category">
+              <option value="">Select a category</option>
+              <option value="us">American</option>
+              <option value="ch">Chinese</option>
+              <option value="jp">Japanese</option>
+              <option value="mx">Mexican</option>
+              <option value="eu">European</option>
+              <option value="other">Other</option>
+            </select> 
+          </div>
+        </div>
         <div class="container form_row"><div class="quarter"></div>
           <div class="threequarters">
             <div class="submit">
@@ -228,7 +244,7 @@
     <!-- We display the posts. -->
     <div id="post_list">
       <div class="post_div" v-for="post in post_list">
-          <div class="post_title" v-if="!post.editing">${post.post_title}</div>
+          <div class="post_title" v-if="!post.editing">[${post.post_category}]${post.post_title}</div>
           <textarea v-if="post.editing" v-model="post.post_title"></textarea>
           <div class="post_content">
     			<!-- Code for star ratings. -->

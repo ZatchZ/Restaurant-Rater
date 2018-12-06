@@ -6,6 +6,7 @@ def add_post():
     post_id = db.post.insert(
         post_title=request.vars.post_title,
         post_content=request.vars.post_content,
+        post_category=None if request.vars.post_category == "" else request.vars.post_category,
     )
     # We return the id of the new post, so we can insert it along all the others.
     return response.json(dict(post_id=post_id))
@@ -17,6 +18,7 @@ def edit_post():
     row.update_record(
         post_title=request.vars.post_title,
         post_content=request.vars.post_content,
+        post_category=request.vars.post_category,
         )
     return
 
@@ -34,6 +36,7 @@ def get_post_list():
             post_title=row.post_title,
             post_content=row.post_content,
             post_author=row.post_author,
+            post_category=row.post_category,
             # thumb = None if row.thumb.id is None else row.thumb.thumb_state,
         ))
     # For homogeneity, we always return a dictionary.
@@ -60,20 +63,32 @@ def edit_reply():
 
 def get_reply_list():
     results = []
-
-    rows = db(db.reply.post_id == request.vars.post_id).select(db.reply.ALL,
+    if auth.user is None:
+        # Not logged in.
+        rows = db(db.reply.post_id == request.vars.post_id).select(db.reply.ALL,
                         db.thumb.ALL,
                         left=[
-                            db.thumb.on((db.thumb.reply_id == db.reply.id) & (db.thumb.user_email == auth.user.email)),
+                            db.thumb.on(db.thumb.reply_id == db.reply.id),
                         ],
                         orderby=~db.reply.reply_time)
+    else:
+        rows = db(db.reply.post_id == request.vars.post_id).select(db.reply.ALL,
+                    db.thumb.ALL,
+                    left=[
+                        db.thumb.on((db.thumb.reply_id == db.reply.id) & (db.thumb.user_email == auth.user.email)),
+                    ],
+                    orderby=~db.reply.reply_time)
     for row in rows:
+        if auth.user is None:
+            t = None
+        else:
+            t = None if row.thumb.id is None else row.thumb.thumb_state
         results.append(dict(
             id=row.reply.id,
             reply_content=row.reply.reply_content,
             reply_author=row.reply.reply_author,
             ratings = [row.reply.rating0, row.reply.rating1, row.reply.rating2],
-            thumb = None if row.thumb.id is None else row.thumb.thumb_state,
+            thumb = t,
         ))
     return response.json(dict(reply_list=results))
 
