@@ -191,27 +191,31 @@
         <p><a href="http://lacodeid.com/">Restaurant Rater</a>© 2018</p>
       </footer>
 
+
+
+
     </div><!-- /.container -->
   <div class="main_content" v-if="page_state === 'posts'">
+
     <div id="add_post" v-if="is_logged_in">
       <div v-if="show_form">
-        <div class="container form_row">
-          <div class="label quarter">
-            Title:
+        <div class="w3-container w3-blue">
+          <div class="label threequarters">
+            Restaurant name:
           </div>
           <div class="form threequarters">
-            <input v-model="form_title" placeholder="Enter the post title"/>
+            <input v-model="form_title" placeholder="Enter your restaurant's name"/>
           </div>
         </div>
-        <div class="container form_row">
+        <div class="w3-container w3-red">
           <div class="label quarter">
-            Content:
+            Introduction:
           </div>
           <div class="form threequarters">
-            <textarea v-model="form_content" placeholder="Enter the content of your post"></textarea>
+            <textarea v-model="form_content" placeholder="Enter the introduction of your restaurant"></textarea>
           </div>
         </div>
-        <div class="container form_row">
+        <div class="w3-container w3-blue">
           <div class="label quarter">
             Category:
           </div>
@@ -224,10 +228,10 @@
               <option value="mx">Mexican</option>
               <option value="eu">European</option>
               <option value="other">Other</option>
-            </select> 
+            </select>
           </div>
         </div>
-        <div class="container form_row"><div class="quarter"></div>
+        <div class="w3-container w3-lightskyblue"><div class="middle"></div>
           <div class="threequarters">
             <div class="submit">
               <button id="add-post" v-on:click="add_post">Submit</button>
@@ -235,11 +239,11 @@
           </div>
         </div>
       </div>
-      <button v-show="!show_form" v-on:click="show_form = true">Add Post <i class="fa fa-plus-circle"></i></button>
+      <button v-show="!show_form" v-on:click="show_form = true">Post My Restaurant <i class="fa fa-plus-circle"></i></button>
     </div>
 
     <!-- Message in case there are no posts. -->
-    <div v-if="post_list.length === 0">There are no posts.</div>
+    <div v-if="post_list.length === 0">There are no restaurant posted.</div>
 
     <!-- We display the posts. -->
     <div id="post_list">
