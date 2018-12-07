@@ -24,12 +24,11 @@ def edit_post():
 
 def get_post_list():
     results = []
-    rows = db().select(db.post.ALL,
-                        # db.thumb.ALL,
-                        # left=[
-                        #     db.thumb.on((db.thumb.post_id == db.post.id) & (db.thumb.user_email == auth.user.email)),
-                        # ],
-                        orderby=~db.post.post_time)
+    cat = request.vars.post_category
+    if cat == "" :
+        rows = db().select(db.post.ALL,orderby=~db.post.post_time)
+    else:
+        rows = db(db.post.post_category == cat).select(db.post.ALL,orderby=~db.post.post_time)
     for row in rows:
         results.append(dict(
             id=row.id,
@@ -37,7 +36,6 @@ def get_post_list():
             post_content=row.post_content,
             post_author=row.post_author,
             post_category=row.post_category,
-            # thumb = None if row.thumb.id is None else row.thumb.thumb_state,
         ))
     # For homogeneity, we always return a dictionary.
     return response.json(dict(post_list=results))

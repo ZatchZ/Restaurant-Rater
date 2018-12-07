@@ -50,8 +50,8 @@ var app = function() {
         // If you put code here, it is run BEFORE the call comes back.
     };
 
-    self.get_posts = function() {
-        $.getJSON(get_post_list_url,
+    self.get_posts = function(filter = "") {
+        $.getJSON(get_post_list_url, {post_category: filter},
             function(data) {
                 // I am assuming here that the server gives me a nice list
                 // of posts, all ready for display.
@@ -98,7 +98,6 @@ var app = function() {
                 p.avg_ratings[j] /= len;
                 if(isNaN(p.avg_ratings[j])) p.avg_ratings[j] = 0;
             }
-            console.log("post:", p._idx, "ratings:",p.avg_ratings);
         })
     }
     self.edit_post = function (post_idx) {
@@ -364,6 +363,22 @@ var app = function() {
         r._tDown_black = (r.thumb == 'd');
     };
 
+    //code for page states
+    self.set_page_state = function (state){
+        //In case you need to run special code for changing states, put it here
+        switch (state){
+            case "posts": 
+                self.get_posts(self.vue.post_filter);
+                break;
+            case "market": //nothing special
+                break; 
+        }
+        if(state != "posts"){
+            self.vue.show_form = false;
+            self.vue.post_filter = "";
+        }
+        self.vue.page_state = state;
+    }
     // Complete as needed.
     self.vue = new Vue({
         el: "#vue-div",
@@ -374,15 +389,19 @@ var app = function() {
             form_content: "",
             form_category: "",
             post_list: [],
-            show_form: false,
             star_indices: [1, 2, 3, 4, 5],
             rating_strings: ["1", "2", "3"],
             // rating_strings: ["I forgot", "The rating", "Criterias"]
-            page_state: "test"
+            show_form: false,
+            post_filter: "",
+            page_state: "test",
         },
         methods: {
+            // page states
+            set_page_state: self.set_page_state,
             // posts
             add_post: self.add_post,
+            get_posts: self.get_posts,
             edit_post: self.edit_post,
             save_edit: self.save_edit,
             // replies
@@ -410,7 +429,7 @@ var app = function() {
     });
 
     // Gets the posts.
-    self.get_posts();
+    // self.get_posts();
 
     return self;
 };
