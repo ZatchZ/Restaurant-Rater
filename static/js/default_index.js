@@ -69,7 +69,7 @@ var app = function() {
         enumerate(self.vue.post_list);
         self.vue.post_list.map(function (e) {
             //editing
-            Vue.set(e, 'editable', (curr_user == e.post_author));
+            Vue.set(e, 'editable', (curr_user == e.post_author || admin_email));
             Vue.set(e, 'editing', false);
             //replies
             Vue.set(e, 'show_reply', false);
@@ -137,7 +137,7 @@ var app = function() {
         var p = self.vue.post_list[post_idx];
         enumerate(p.reply_list);
         p.reply_list.map(function (e) {
-            Vue.set(e, 'editable', (curr_user == e.reply_author));
+            Vue.set(e, 'editable', (curr_user == e.reply_author || admin_email));
             Vue.set(e, 'editing', false);
             // Number of stars to display.
             Vue.set(e, '_arr_num_stars', e.ratings);

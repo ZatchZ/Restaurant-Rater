@@ -20,7 +20,9 @@
     var get_all_stars_url = "{{=URL('api', 'all_stars')}}";
     //user misc
     var is_logged_in = {{='false' if auth.user is None else 'true'}};
-    var user_can_post = false;
+    // VERY VERY INSECURE! ANYONE CAN F12 AND CHANGE ADMIN EMAIL TO THEIR OWN! TESTING ONLY!
+    var admin_email = 'admin@admin.com'; 
+    // ^^^^^INSECURE!^^^^^
     var curr_user = "{{=auth.user.email if auth.user else None}}";
 </script>
         <link href="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
@@ -241,20 +243,18 @@
           </div>
         </div>
       </div>
-      <!-- <div class="container"> -->
-        <button v-if="!show_form && user_can_post" v-on:click="show_form = true">Post My Restaurant <i class="fa fa-plus-circle"></i></button>
-        <select v-model="post_filter" v-on:change="get_posts(post_filter)">
-              <option value="">Filter by...</option>
-              <option value="American">Filter by American</option>
-              <option value="Chinese">Filter by Chinese</option>
-              <option value="Japanese">Filter by Japanese</option>
-              <option value="Mexican">Filter by Mexican</option>
-              <option value="European">Filter by European</option>
-              <option value="Other">Filter by Other</option>
-        </select>
-      <!-- </div> -->
+        <button v-if="!show_form && curr_user == admin_email" v-on:click="show_form = true">Post My Restaurant <i class="fa fa-plus-circle"></i></button>
     </div>
 
+    <select v-model="post_filter" v-on:change="get_posts(post_filter)">
+          <option value="">Filter by...</option>
+          <option value="American">Filter by American</option>
+          <option value="Chinese">Filter by Chinese</option>
+          <option value="Japanese">Filter by Japanese</option>
+          <option value="Mexican">Filter by Mexican</option>
+          <option value="European">Filter by European</option>
+          <option value="Other">Filter by Other</option>
+    </select>
     <!-- Message in case there are no posts. -->
     <div v-if="post_list.length === 0">There are no ${post_filter} restaurants posted.</div>
 
@@ -387,7 +387,7 @@
                   </div>
                 </div>
               </div>
-              <button v-show="!post.show_reply" v-on:click="get_replies(post._idx); show_reply_toggle(post._idx)">Add / Show Reviews</button>
+              <button v-show="!post.show_reply" v-on:click="get_replies(post._idx); show_reply_toggle(post._idx)"><span v-if="is_logged_in">Add / </span>Show Reviews</button>
             </div>
           </div>
       </div>
