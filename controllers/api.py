@@ -18,9 +18,13 @@ def edit_post():
     row.update_record(
         post_title=request.vars.post_title,
         post_content=request.vars.post_content,
-        post_category=request.vars.post_category,
         )
     return
+
+@auth.requires_signature()
+def delete_post():
+    db(db.post.id == request.vars.post_id).delete()
+    return 
 
 def get_post_list():
     results = []
@@ -64,6 +68,11 @@ def edit_reply():
     row = db(db.reply.id == request.vars.reply_id).select().first()
     row.update_record(reply_content=request.vars.reply_content)
     return
+
+@auth.requires_signature()
+def delete_reply():
+    db(db.reply.id == request.vars.reply_id).delete()
+    return 
 
 def get_reply_list():
     results = []
