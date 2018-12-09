@@ -98,8 +98,7 @@
         </div>
         <div class="col-md-5">
        <br> <br> <br> <br>
-          <p><button id="state-change" v-on:click="show_form = true; page_state = 'posts'">Posts My Restaurant</button></p> 
-
+          <p><button id="post-american" v-on:click="start_posting('American')">Posts My Restaurant</button></p>
         </div>
       </div>
 
@@ -112,7 +111,7 @@
         </div>
         <div class="col-md-5 pull-md-7">
          <br> <br> <br> <br>
-         <p><button id="state-change" v-on:click="page_state = 'posts'">Posts My Restaurant</button></p>
+         <p><button id="post-chinese" v-on:click="start_posting('Chinese')">Posts My Restaurant</button></p>
 
         </div>
       </div>
@@ -126,7 +125,7 @@
         </div>
         <div class="col-md-5">
          <br> <br> <br> <br>
-         <p><button id="state-change" v-on:click="page_state = 'posts'">Posts My Restaurant</button></p>
+         <p><button id="post-japanese" v-on:click="start_posting('Japanese')">Posts My Restaurant</button></p>
 
         </div>
       </div>
@@ -142,7 +141,7 @@
         </div>
         <div class="col-md-5">
          <br> <br> <br> <br>
-            <p><button id="state-change" v-on:click="page_state = 'posts'">Posts My Restaurant</button></p>
+            <p><button id="post-mexican" v-on:click="start_posting('Mexican')">Posts My Restaurant</button></p>
         </div>
       </div>
 
@@ -157,8 +156,7 @@
         </div>
         <div class="col-md-5">
           <br> <br> <br> <br>
-       <p><button id="state-change" v-on:click="page_state = 'posts'">Posts My Restaurant</button></p>
-
+            <p><button id="post-european" v-on:click="start_posting('European')">Posts My Restaurant</button></p>
         </div>
       </div>
 
@@ -173,8 +171,7 @@
         </div>
         <div class="col-md-5">
          <br> <br> <br> <br>
-          <p><button id="state-change" v-on:click="page_state = 'posts'">Posts My Restaurant</button></p>
-
+          <p><button id="post-other" v-on:click="start_posting('Other')">Posts My Restaurant</button></p>
         </div>
       </div>
 

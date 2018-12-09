@@ -418,6 +418,12 @@ var app = function() {
         }
         self.vue.page_state = state;
     }
+    self.start_posting = function (category){
+        self.vue.show_form = true;
+        self.vue.post_filter = category;
+        self.vue.form_category = category;
+        self.set_page_state("posts");
+    }
     // Complete as needed.
     self.vue = new Vue({
         el: "#vue-div",
@@ -440,6 +446,7 @@ var app = function() {
         methods: {
             // page states
             set_page_state: self.set_page_state,
+            start_posting: self.start_posting,
             // posts
             add_post: self.add_post,
             get_posts: self.get_posts,
