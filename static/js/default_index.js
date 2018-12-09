@@ -74,6 +74,7 @@ var app = function() {
         );
     };
 
+
     self.process_posts = function() {
         // This function is used to post-process posts, after the list has been modified
         // or after we have gotten new posts. 
@@ -85,6 +86,7 @@ var app = function() {
             Vue.set(e, 'editing', false);
             Vue.set(e, 'title_empty', false);
             Vue.set(e, 'cont_empty', false);
+            Vue.set(e, 'confirm_delete', false);
             //replies
             Vue.set(e, 'show_reply', false);
             Vue.set(e, 'replying', false);
@@ -99,6 +101,22 @@ var app = function() {
 
         });
     };
+
+    self.delete_post = function(post_idx) {
+        var p = self.vue.post_list[post_idx];
+        if(!p.confirm_delete){
+            p.confirm_delete = true;
+            return;
+        }
+        $.post(delete_post_url,
+            {
+                post_id: p.id,
+            },
+            function (data) {
+                self.get_posts(self.vue.post_filter, self.vue.search_term);
+            });
+    };
+
     self.avg_post_stars = function (p) {
         $.getJSON(get_all_stars_url, {post_id: p.id}, function (data) {
             p.avg_ratings = [0,0,0];
@@ -167,7 +185,7 @@ var app = function() {
             Vue.set(e, 'editable', (curr_user == e.reply_author));
             Vue.set(e, 'editing', false);
             Vue.set(e, 'edit_empty', false);
-
+            Vue.set(e, 'confirm_delete', false);
             // Number of stars to display.
             Vue.set(e, '_arr_num_stars', e.ratings);
 
@@ -232,6 +250,21 @@ var app = function() {
         var p = self.vue.post_list[post_idx];
         var r = p.reply_list[reply_idx];
         r.editing = true;
+    };
+    self.delete_reply = function(post_idx, reply_idx) {
+        var p = self.vue.post_list[post_idx];
+        var r = p.reply_list[reply_idx];
+        if(!r.confirm_delete){
+            r.confirm_delete = true;
+            return;
+        }
+        $.post(delete_reply_url,
+            {
+                reply_id: r.id,
+            },
+            function (data) {
+                self.get_replies(post_idx);
+            });
     };
     self.save_reply_edit = function (post_idx, reply_idx) {
         var p = self.vue.post_list[post_idx];
@@ -463,6 +496,7 @@ var app = function() {
             // posts
             add_post: self.add_post,
             get_posts: self.get_posts,
+            delete_post: self.delete_post,
             edit_post: self.edit_post,
             save_edit: self.save_edit,
             // replies
@@ -470,6 +504,7 @@ var app = function() {
             get_replies: self.get_replies,
             add_reply: self.add_reply,
             edit_reply: self.edit_reply,
+            delete_reply: self.delete_reply,
             save_reply_edit: self.save_reply_edit,
             new_reply_stars_out: self.new_reply_stars_out,
             new_reply_stars_over: self.new_reply_stars_over,

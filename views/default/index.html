@@ -6,10 +6,12 @@
     //posts
     var add_post_url = "{{=URL('api', 'add_post', user_signature=True)}}";
     var edit_post_url = "{{=URL('api', 'edit_post', user_signature=True)}}";
+    var delete_post_url = "{{=URL('api', 'delete_post', user_signature=True)}}";
     var get_post_list_url = "{{=URL('api', 'get_post_list')}}";
     //replies
     var add_reply_url = "{{=URL('api', 'add_reply', user_signature=True)}}";
     var edit_reply_url = "{{=URL('api', 'edit_reply', user_signature=True)}}";
+    var delete_reply_url = "{{=URL('api', 'delete_reply', user_signature=True)}}";
     var get_reply_list_url = "{{=URL('api', 'get_reply_list')}}";
     // thumbs.
     var thumb_count_url = "{{=URL('api', 'all_thumbs')}}";
@@ -34,7 +36,11 @@
 
 <div id="vue-div" class="display:none">
     <div class="container searchbar">
-        <input v-on:keyup.enter="start_search" v-model="search_term" placeholder="Search for a restaurant"/>
+      <input v-on:keyup.enter="start_search" v-model="search_term" placeholder="Search for a restaurant"/>
+      <div class="center">
+        <button id="state-change" v-on:click="set_page_state('posts')">Postings <i class="fa fa-list-ul"></i></button>
+        <button id="state-change" v-on:click="set_page_state('market')">Home <i class="fa fa-home"></i></button>
+      </div>
     </div>
     <div class="container marketing" v-if=" page_state === 'market'">
 
@@ -273,7 +279,11 @@
               <span class="error" v-if="post.cont_empty">Restaurant description cannot be empty!</span>
           	  <textarea v-model="post.post_content"></textarea>
           	  <div class="editing">
-                <button id="save-edit" v-on:click="save_edit(post._idx)">Save</button>
+                <button id="save-edit" v-on:click="save_edit(post._idx)">Save <i class="fa fa-floppy-o"></i></button>
+                <button id="delete" v-on:click="delete_post(post._idx)">
+                  <span class="error" v-if="post.confirm_delete">Are you sure?</span>
+                  <span v-else>Delete <i class="fa fa-trash"></i></span>
+                </button>
             	</div>
           	</div>
      	    </div>
@@ -282,7 +292,7 @@
             <!-- Code for Replies. -->
             <div class="replies_div">
               <div v-if="post.show_reply">
-                <button v-on:click="show_reply_toggle(post._idx)">Hide Reviews</button>
+                <button v-on:click="show_reply_toggle(post._idx)">Hide Reviews <i class="fa fa-search-minus"></i></button>
                 <button v-if="is_logged_in" v-show="!post.replying" v-on:click="post.replying = true">Add Review <i class="fa fa-plus-circle"></i></button>
                 <div v-if="post.replying">
                   <div class="container form_row">
@@ -344,7 +354,12 @@
                     <span class="error" v-if="reply.edit_empty">Restaurant description cannot be empty!</span>
                     <textarea v-model="reply.reply_content"></textarea>
                     <div class="editing">
-                      <button id="save-edit" v-on:click="save_reply_edit(post._idx, reply._idx)">Save</button>
+                      <button id="save-edit" v-on:click="save_reply_edit(post._idx, reply._idx)">Save <i class="fa fa-floppy-o"></i></button>
+                      <button id="delete-reply" v-on:click="delete_reply(post._idx)">
+                        <span class="error" v-if="reply.confirm_delete">Are you sure?</span>
+                        <span v-else>Delete <i class="fa fa-trash"></i></span>
+                      </button>
+                      
                     </div>
                   </div>
 
@@ -380,16 +395,10 @@
                   </div>
                 </div>
               </div>
-              <button v-show="!post.show_reply" v-on:click="get_replies(post._idx); show_reply_toggle(post._idx)"><span v-if="is_logged_in">Add / </span>Show Reviews</button>
+              <button v-show="!post.show_reply" v-on:click="get_replies(post._idx); show_reply_toggle(post._idx)"><span v-if="is_logged_in">Add / </span>Show Reviews <i class="fa fa-search-plus"></i></button>
             </div>
           </div>
       </div>
-    </div>
-  </div>
-  <div class="container center">
-    <div class="quarter">
-      <button style = "background-color: rgb(255, 189, 65)" id="state-change" v-on:click="set_page_state('posts')">Posts</button>
-      <button style = "background-color: rgb(255, 189, 65)" id="state-change" v-on:click="set_page_state('market')">Marketing</button>
     </div>
   </div>
 </div>
