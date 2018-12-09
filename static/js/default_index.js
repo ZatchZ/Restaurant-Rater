@@ -481,7 +481,7 @@ var app = function() {
             //list of posts
             post_list: [],
             star_indices: [1, 2, 3, 4, 5],
-            rating_strings: ["long word placeholder", "Rating", "yes"],
+            rating_strings: ["Service", "Ambience", "Taste"],
             post_filter: "",
             //page misc
             page_state: "market",
