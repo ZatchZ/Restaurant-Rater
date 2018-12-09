@@ -2,7 +2,8 @@
   font-family: 'Open Sans', sans-serif !important;
   font-size: 12px;
   background-size: cover;
-  background-color: powderblue;
+  background-color: rgb(179, 55, 55);
+  background: -webkit-linear-gradient(right, #f3f3f3, #f3f3f3);
 }
 
 h2 {
@@ -40,9 +41,9 @@ p {
   box-sizing: border-box;
   font-size: 18px;
 }
-
+/*
 .btn {
-  background-color: #7693c7 !important;
+  background-color: #a51414 !important;
   border-radius: 10px;
 }
 
@@ -50,14 +51,15 @@ p {
   box-shadow: none !important;
   background: #43A047;
 }
-
+*/
 form {
   margin: 15px 0 0;
   font-size: 12px;
   width: auto;
   text-decoration: none;
 }
-
+/*
+Sheng's body
 body {
   background-color: #7693c7;
   background: -webkit-linear-gradient(right, #7693c7, #8DC26F);
@@ -68,3 +70,13 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
+*/
+/*
+body {
+  background-color: #7693c7;
+  background: -webkit-linear-gradient(right, #7693c7, #8DC26F);
+  font-family: "Roboto", sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+*/
