@@ -30,15 +30,12 @@
 <!-- <script src="//code.jquery.com/jquery-1.11.1.min.js"></script> -->
 {{end}}
 
-
-
-
-
     <!-- Marketing messaging and featurettes
     ================================================== -->
     <!-- Wrap the rest of the page in another container to center all the content. -->
+
 <div id="vue-div" class="display:none">
-    <div class="container marketing" v-if="page_state === 'market'">
+    <div class="container marketing" v-if=" page_state === 'market'">
 
       <!-- Three columns of text below the carousel -->
       <div class="row">
@@ -264,6 +261,7 @@
           <div class="post_title" v-if="!post.editing">[${post.post_category}] ${post.post_title}</div>
           <textarea v-if="post.editing" v-model="post.post_title"></textarea>
           <div class="post_content">
+            
     			<!-- Code for star ratings. -->
             <div v-for="starr_idx in [0,1,2]">
 		  	      ${rating_strings[starr_idx]}
@@ -272,7 +270,8 @@
       		  	  <i v-if="idx > post.avg_ratings[starr_idx]" class="fa fa-star-o"></i>
   			      </span>
 			      </div>
-			    <!-- Code for star ratings end. -->
+          <!-- Code for star ratings end. -->
+          
           	<div v-if="!post.editing">
           	  <div>${post.post_content}</div>
           	  <div class="start-edit" v-if="post.editable">
@@ -395,8 +394,8 @@
   </div>
 <div class="container center">
   <div class="quarter">
-    <button id="state-change" v-on:click="set_page_state('posts')">Posts</button>
-    <button id="state-change" v-on:click="set_page_state('market')">Marketing</button>
+    <button style = "background-color: rgb(255, 189, 65)" id="state-change" v-on:click="set_page_state('posts')">Posts</button>
+    <button style = "background-color: rgb(255, 189, 65)" id="state-change" v-on:click="set_page_state('market')">Marketing</button>
   </div>
 </div>
 <script src="{{=URL('static', 'js/default_index.js')}}"></script>
