@@ -62,8 +62,8 @@ var app = function() {
         // If you put code here, it is run BEFORE the call comes back.
     };
 
-    self.get_posts = function(filter = "") {
-        $.getJSON(get_post_list_url, {post_category: filter},
+    self.get_posts = function(filter = "", search = "") {
+        $.getJSON(get_post_list_url, {post_category: filter, search_term: search},
             function(data) {
                 // I am assuming here that the server gives me a nice list
                 // of posts, all ready for display.
@@ -407,7 +407,7 @@ var app = function() {
         //In case you need to run special code for changing states, put it here
         switch (state){
             case "posts": 
-                self.get_posts(self.vue.post_filter);
+                self.get_posts(self.vue.post_filter, self.vue.search_term);
                 break;
             case "market": //nothing special
                 break; 
@@ -419,34 +419,47 @@ var app = function() {
         self.vue.page_state = state;
     }
     self.start_posting = function (category){
+        if(!is_logged_in){
+            window.location.href = login_url;
+            return;
+        }
         self.vue.show_form = true;
         self.vue.post_filter = category;
         self.vue.form_category = category;
         self.set_page_state("posts");
     }
+    self.start_search = function (){
+        self.set_page_state("posts");
+    }
+    
     // Complete as needed.
     self.vue = new Vue({
         el: "#vue-div",
         delimiters: ['${', '}'],
         unsafeDelimiters: ['!{', '}'],
         data: {
+            //posting
             form_title: "",
             title_empty: false,
             form_content: "",
             cont_empty: false,
             form_category: "",
+            show_form: false,
+            //list of posts
             post_list: [],
             star_indices: [1, 2, 3, 4, 5],
-            rating_strings: ["1", "2", "3"],
-            // rating_strings: ["I forgot", "The rating", "Criterias"]
-            show_form: false,
+            rating_strings: ["long word placeholder", "Rating", "yes"],
             post_filter: "",
+            //page misc
             page_state: "market",
+            searching:false,
+            search_term: "",
         },
         methods: {
             // page states
             set_page_state: self.set_page_state,
             start_posting: self.start_posting,
+            start_search: self.start_search,
             // posts
             add_post: self.add_post,
             get_posts: self.get_posts,
@@ -475,10 +488,6 @@ var app = function() {
         }
 
     });
-
-    // Gets the posts.
-    // self.get_posts();
-
     return self;
 };
 

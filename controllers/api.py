@@ -25,17 +25,23 @@ def edit_post():
 def get_post_list():
     results = []
     cat = request.vars.post_category
+    search = request.vars.search_term.lower()
     if cat == "" :
         rows = db().select(db.post.ALL,orderby=~db.post.post_time)
     else:
         rows = db(db.post.post_category == cat).select(db.post.ALL,orderby=~db.post.post_time)
     for row in rows:
+        t = row.post_title.lower()
+        c = row.post_content.lower()
+        if t.find(search) < 0:
+            if c.find(search) < 0:
+                continue
         results.append(dict(
-            id=row.id,
-            post_title=row.post_title,
-            post_content=row.post_content,
-            post_author=row.post_author,
-            post_category=row.post_category,
+                id=row.id,
+                post_title=row.post_title,
+                post_content=row.post_content,
+                post_author=row.post_author,
+                post_category=row.post_category,
         ))
     # For homogeneity, we always return a dictionary.
     return response.json(dict(post_list=results))

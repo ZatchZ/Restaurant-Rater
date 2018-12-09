@@ -19,6 +19,7 @@
     var set_stars_url = "{{=URL('api', 'set_stars', user_signature=True)}}";
     var get_all_stars_url = "{{=URL('api', 'all_stars')}}";
     //user misc
+    var login_url = "{{=URL('default', 'user')}}";
     var is_logged_in = {{='false' if auth.user is None else 'true'}};
     var curr_user = "{{=auth.user.email if auth.user else None}}";
 </script>
@@ -32,6 +33,9 @@
     <!-- Wrap the rest of the page in another container to center all the content. -->
 
 <div id="vue-div" class="display:none">
+    <div class="container searchbar">
+        <input v-on:keyup.enter="start_search" v-model="search_term" placeholder="Search for a restaurant"/>
+    </div>
     <div class="container marketing" v-if=" page_state === 'market'">
 
       <!-- Three columns of text below the carousel -->
@@ -394,10 +398,11 @@
       </div>
     </div>
   </div>
-<div class="container center">
-  <div class="quarter">
-    <button style = "background-color: rgb(255, 189, 65)" id="state-change" v-on:click="set_page_state('posts')">Posts</button>
-    <button style = "background-color: rgb(255, 189, 65)" id="state-change" v-on:click="set_page_state('market')">Marketing</button>
+  <div class="container center">
+    <div class="quarter">
+      <button style = "background-color: rgb(255, 189, 65)" id="state-change" v-on:click="set_page_state('posts')">Posts</button>
+      <button style = "background-color: rgb(255, 189, 65)" id="state-change" v-on:click="set_page_state('market')">Marketing</button>
+    </div>
   </div>
 </div>
 <script src="{{=URL('static', 'js/default_index.js')}}"></script>
