@@ -394,7 +394,7 @@ var app = function() {
             // rating_strings: ["I forgot", "The rating", "Criterias"]
             show_form: false,
             post_filter: "",
-            page_state: "test",
+            page_state: "market",
         },
         methods: {
             // page states
