@@ -9,7 +9,7 @@
     <link href="{{=URL('static','css/calendar.css')}}" rel="stylesheet" type="text/css"/>
     <link href="{{=URL('static','css/web2py.css')}}" rel="stylesheet" type="text/css"/>
     <link href="{{=URL('static','css/myapp.css')}}" rel="stylesheet" type="text/css"/>
-      <link href="{{=URL('static','css/user.css')}}" rel="stylesheet" type="text/css"/>
+    <link href="{{=URL('static','css/user.css')}}" rel="stylesheet" type="text/css"/>
 
       <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
 
@@ -19,12 +19,7 @@
     {{include "web2py_ajax.html"}}
     {{block head}}{{end}}
   </head>
-  <body class="black">
-    {{if response.flash:}}
-    <div class="w2p_flash">
-      {{=response.flash}}
-    </div>
-    {{pass}}
+  <body>
     <header class="lightcoral padded">
          <div class="container">
       <h1 class="logo"></h1>
@@ -34,7 +29,8 @@
 
     <nav class="navbar navbar-expand-lg navbar-light bg-faded" id="nav">
 
-        <img style="border-radius: 100px" src="{{=URL('static', 'images/rrLogo.jpg')}}" />
+       <a href= "{{=URL('default', 'index')}}"> 
+         <img v-on: click= "" style="width: 200px" src="{{=URL('static', 'images/RestaurantRaterLogo.png')}}" /></a>
       <div class="container middle max1000">
         <div class="fill middle">
           <label class="ham padded fa fa-bars" for="menu"></label>
@@ -43,16 +39,16 @@
               <!--This controls the menu-->
           <!--  <input type="checkbox" id="menu"/>-->
             <!--{{=MENU(response.menu,_class='menu')}}-->
-
-            <ul class="menu right">
+          <h3 style = "font-size: 30px">
+            <ul class="menu" >
               <li>
                 {{=auth.navbar(mode='dropdown')}}
               </li>
-          <li><a href="{{=URL('default', 'user')}}" >Search Resturants</a></li>
-                <li><a href="{{=URL('default', 'index')}}" >Home</a></li>
-
+              <li><a href="{{=URL('default', 'index')}}" >Home</a></li>
+              <li><a href="{{=URL('default', 'user')}}" >  Search Resturants</a></li>
 
             </ul>
+          </h3>
           </div>
         </div>
       </div>

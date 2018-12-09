@@ -20,12 +20,9 @@
     var get_all_stars_url = "{{=URL('api', 'all_stars')}}";
     //user misc
     var is_logged_in = {{='false' if auth.user is None else 'true'}};
-    // VERY VERY INSECURE! ANYONE CAN F12 AND CHANGE ADMIN EMAIL TO THEIR OWN! TESTING ONLY!
-    var admin_email = 'admin@admin.com'; 
-    // ^^^^^INSECURE!^^^^^
     var curr_user = "{{=auth.user.email if auth.user else None}}";
 </script>
-        <link href="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+<link href="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
 <script src="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
 <!-- <script src="//code.jquery.com/jquery-1.11.1.min.js"></script> -->
 {{end}}
@@ -101,7 +98,7 @@
         </div>
         <div class="col-md-5">
        <br> <br> <br> <br>
-          <p><button id="state-change" v-on:click="page_state = 'posts'">Posts My Restaurant</button></p> 
+          <p><button id="state-change" v-on:click="show_form = true; page_state = 'posts'">Posts My Restaurant</button></p> 
 
         </div>
       </div>
@@ -205,6 +202,7 @@
             Restaurant name:
           </div>
           <div class="form threequarters">
+            <span class="error" v-if="title_empty">Restaurant name cannot be empty!</span>
             <input v-model="form_title" placeholder="Enter your restaurant's name"/>
           </div>
         </div>
@@ -213,6 +211,7 @@
             Introduction:
           </div>
           <div class="form threequarters">
+            <span class="error" v-if="cont_empty">Restaurant description cannot be empty!</span>
             <textarea v-model="form_content" placeholder="Enter the introduction of your restaurant"></textarea>
           </div>
         </div>
@@ -240,7 +239,7 @@
           </div>
         </div>
       </div>
-        <button v-if="!show_form && curr_user == admin_email" v-on:click="show_form = true">Post My Restaurant <i class="fa fa-plus-circle"></i></button>
+        <button v-if="!show_form" v-on:click="show_form = true">Post My Restaurant <i class="fa fa-plus-circle"></i></button>
     </div>
 
     <select v-model="post_filter" v-on:change="get_posts(post_filter)">
@@ -259,7 +258,10 @@
     <div id="post_list">
       <div class="post_div" v-for="post in post_list">
           <div class="post_title" v-if="!post.editing">[${post.post_category}] ${post.post_title}</div>
-          <textarea v-if="post.editing" v-model="post.post_title"></textarea>
+          <div v-if="post.editing">
+            <span class="error" v-if="post.title_empty">Restaurant description cannot be empty!</span>
+            <textarea v-model="post.post_title"></textarea>
+          </div>
           <div class="post_content">
             
     			<!-- Code for star ratings. -->
@@ -279,6 +281,7 @@
             	</div>
           	</div>
           	<div v-if="post.editing">
+              <span class="error" v-if="post.cont_empty">Restaurant description cannot be empty!</span>
           	  <textarea v-model="post.post_content"></textarea>
           	  <div class="editing">
                 <button id="save-edit" v-on:click="save_edit(post._idx)">Save</button>
@@ -295,6 +298,7 @@
                 <div v-if="post.replying">
                   <div class="container form_row">
                     <div class="form">
+                      <span class="error" v-if="post.reply_empty">Review cannot be empty!</span>
                       <textarea v-model="post.reply_content" placeholder="Enter the content of your reply"></textarea>
                       And your ratings:
                       <!-- Code for star ratings. -->
@@ -348,6 +352,7 @@
                     </div>
                   </div>
                   <div v-if="reply.editing">
+                    <span class="error" v-if="reply.edit_empty">Restaurant description cannot be empty!</span>
                     <textarea v-model="reply.reply_content"></textarea>
                     <div class="editing">
                       <button id="save-edit" v-on:click="save_reply_edit(post._idx, reply._idx)">Save</button>

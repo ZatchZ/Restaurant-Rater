@@ -15,6 +15,18 @@ var app = function() {
     var enumerate = function(v) { var k=0; return v.map(function(e) {e._idx = k++;});};
 
     self.add_post = function () {
+        err_flag = false
+        if(self.vue.form_title == ""){
+            self.vue.title_empty = true;
+            err_flag = true;
+        }
+        else self.vue.title_empty = false;
+        if(self.vue.form_content == ""){
+            self.vue.cont_empty = true;
+            err_flag = true;
+        }
+        else self.vue.cont_empty = false;
+        if(err_flag) return;
         // We disable the button, to prevent double submission.
         $.web2py.disableElement($("#add-post"));
         var sent_title = self.vue.form_title; // Makes a copy 
@@ -69,12 +81,15 @@ var app = function() {
         enumerate(self.vue.post_list);
         self.vue.post_list.map(function (e) {
             //editing
-            Vue.set(e, 'editable', (curr_user == e.post_author || admin_email));
+            Vue.set(e, 'editable', (curr_user == e.post_author));
             Vue.set(e, 'editing', false);
+            Vue.set(e, 'title_empty', false);
+            Vue.set(e, 'cont_empty', false);
             //replies
             Vue.set(e, 'show_reply', false);
             Vue.set(e, 'replying', false);
             Vue.set(e, 'reply_content', '');
+            Vue.set(e, 'reply_empty', false);
             Vue.set(e, 'reply_ratings', [0,0,0]);
             Vue.set(e, '_display_ratings', [0,0,0]);
             Vue.set(e, 'reply_list', []);
@@ -107,6 +122,18 @@ var app = function() {
 
     self.save_edit = function (post_idx) {
         var p = self.vue.post_list[post_idx];
+        err_flag = false
+        if(p.post_title == ""){
+            p.title_empty = true;
+            err_flag = true;
+        }
+        else p.title_empty = false;
+        if(p.post_content == ""){
+            p.cont_empty = true;
+            err_flag = true;
+        }
+        else p.cont_empty = false;
+        if(err_flag) return;
         $.post(edit_post_url,
             {
                 post_id: p.id,
@@ -137,8 +164,10 @@ var app = function() {
         var p = self.vue.post_list[post_idx];
         enumerate(p.reply_list);
         p.reply_list.map(function (e) {
-            Vue.set(e, 'editable', (curr_user == e.reply_author || admin_email));
+            Vue.set(e, 'editable', (curr_user == e.reply_author));
             Vue.set(e, 'editing', false);
+            Vue.set(e, 'edit_empty', false);
+
             // Number of stars to display.
             Vue.set(e, '_arr_num_stars', e.ratings);
 
@@ -165,6 +194,11 @@ var app = function() {
 
     self.add_reply = function (post_idx) {
         var p = self.vue.post_list[post_idx];
+        if(p.reply_content == ""){
+            p.reply_empty = true;
+            return
+        }
+        else p.reply_empty = false;
         $.web2py.disableElement($("#add-reply"));
         var sent_content = p.reply_content; // Makes a copy 
         var sent_ratings = p.reply_ratings;
@@ -202,6 +236,11 @@ var app = function() {
     self.save_reply_edit = function (post_idx, reply_idx) {
         var p = self.vue.post_list[post_idx];
         var r = p.reply_list[reply_idx];
+        if (r.reply_content == ""){
+            r.edit_empty = true;
+            return;
+        }
+        else r.edit_empty = false;
         $.post(edit_reply_url,
             {
                 reply_id: r.id,
@@ -386,7 +425,9 @@ var app = function() {
         unsafeDelimiters: ['!{', '}'],
         data: {
             form_title: "",
+            title_empty: false,
             form_content: "",
+            cont_empty: false,
             form_category: "",
             post_list: [],
             star_indices: [1, 2, 3, 4, 5],
