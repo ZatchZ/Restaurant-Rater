@@ -280,7 +280,7 @@
           	  <textarea v-model="post.post_content"></textarea>
           	  <div class="editing">
                 <button id="save-edit" v-on:click="save_edit(post._idx)">Save <i class="fa fa-floppy-o"></i></button>
-                <button id="delete" v-on:click="delete_post(post._idx)">
+                <button id="delete" v-on:click="delete_post(post._idx)" v-on:mouseout="post.confirm_delete = false">
                   <span class="error" v-if="post.confirm_delete">Are you sure?</span>
                   <span v-else>Delete <i class="fa fa-trash"></i></span>
                 </button>
@@ -355,8 +355,8 @@
                     <textarea v-model="reply.reply_content"></textarea>
                     <div class="editing">
                       <button id="save-edit" v-on:click="save_reply_edit(post._idx, reply._idx)">Save <i class="fa fa-floppy-o"></i></button>
-                      <button id="delete-reply" v-on:click="delete_reply(post._idx)">
-                        <span class="error" v-if="reply.confirm_delete">Are you sure?</span>
+                      <button id="delete-reply" v-on:click="delete_reply(post._idx, reply._idx)" v-on:mouseout="reply.confirm_delete = false">
+                        <span class="error" v-if="reply.confirm_delete" >Are you sure?</span>
                         <span v-else>Delete <i class="fa fa-trash"></i></span>
                       </button>
                       
