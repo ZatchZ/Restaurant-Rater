@@ -22,7 +22,7 @@
     var get_all_stars_url = "{{=URL('api', 'all_stars')}}";
     //user misc
     var login_url = "{{=URL('default', 'user')}}";
-    var is_logged_in = {{='false' if auth.user is None else 'true'}};
+    var is_logged_in = "{{='false' if auth.user is None else 'true'}}";
     var curr_user = "{{=auth.user.email if auth.user else None}}";
 </script>
 <link href="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
@@ -35,371 +35,376 @@
     <!-- Wrap the rest of the page in another container to center all the content. -->
 
 <div id="vue-div" class="display:none">
-    <div class="container searchbar">
-      <input v-on:keyup.enter="start_search" v-model="search_term" placeholder="Search for a restaurant"/>
-      <div class="center">
-        <button id="state-change" v-on:click="set_page_state('posts')">Postings <i class="fa fa-list-ul"></i></button>
-        <button id="state-change" v-on:click="set_page_state('market')">Home <i class="fa fa-home"></i></button>
+  <div class="container searchbar">
+    <div class="center">
+      <button id="state-change" v-on:click="set_page_state('market')">Home <i class="fa fa-home"></i></button>
+      <button id="state-change" v-on:click="set_page_state('posts')">Postings <i class="fa fa-list-ul"></i></button>
+    </div>
+    <input v-on:keyup.enter="start_search" v-model="search_term" placeholder="Search for a restaurant"/>
+    <br>
+    <br>
+  </div>
+
+  <div class="container marketing" v-if=" page_state === 'market'">
+    <span class="fadeInRight animated" style = "display:block">
+      <!-- Three columns of text below the carousel -->
+    <div class="row">
+      <div class="col-lg-4">
+        <img style="border-radius: 25px" src="{{=URL('static', 'images/american.jpg')}}" />
+        <h2>            </h2>
+        <h2>American food</h2>
+        <p><button id="exp-american" v-on:click="post_filter = 'American'; set_page_state('posts')">Explore American Food</button></p>
+      </div><!-- /.col-lg-4 -->
+      <div class="col-lg-4">
+        <img style="border-radius: 25px" src="{{=URL('static', 'images/chinese.jpg')}}" />
+        <h2>            </h2>
+        <h2>Chinese food</h2>
+
+        <p><button id="exp-chinese" v-on:click="post_filter = 'Chinese'; set_page_state('posts')">Explore Chinese Food</button></p>
+
+      </div><!-- /.col-lg-4 -->
+      <div class="col-lg-4">
+        <img style="border-radius: 25px" src="{{=URL('static', 'images/japanese.jpg')}}" />
+        <h2>            </h2>
+        <h2>Japanese food</h2>
+
+        <p><button id="exp-japanese" v-on:click="post_filter = 'Japanese'; set_page_state('posts')">Explore Japanese Food</button></p>
+      </div><!-- /.col-lg-4 -->
+
+          <div class="col-lg-4">
+      <img style="border-radius: 25px" src="{{=URL('static', 'images/mexican.jpg')}}" />
+              <h2>            </h2>
+        <h2>Mexican food</h2>
+
+        <p><button id="exp-mexican" v-on:click="post_filter = 'Mexican'; set_page_state('posts')">Explore Mexican Food</button></p>
+      </div><!-- /.col-lg-4 -->
+
+          <div class="col-lg-4">
+        <img style="border-radius: 25px" src="{{=URL('static', 'images/european.jpg')}}" />
+              <h2>            </h2>
+        <h2>European food</h2>
+
+        <p><button id="exp-european" v-on:click="post_filter = 'European'; set_page_state('posts')">Explore European Food</button></p>
+      </div><!-- /.col-lg-4 -->
+
+          <div class="col-lg-4">
+        <img style="border-radius: 25px" src="{{=URL('static', 'images/other.jpg')}}" />
+              <h2>            </h2>
+        <h2>Other food</h2>
+
+        <p><button id="exp-other" v-on:click="post_filter = 'Other'; set_page_state('posts')">Explore Other Food</button></p>
+      </div><!-- /.col-lg-4 -->
+    </div><!-- /.row -->
+
+
+
+    <!-- START THE FEATURETTES -->
+
+    <hr class="featurette-divider">
+
+    <div class="row featurette">
+      <div class="col-md-7">
+        <h2 class="featurette-heading">American Food. <span class="text-muted">It'll blow your mind.</span></h2>
+        <p class="lead">American cuisine reflects the history of the United States, blending the culinary contributions of various groups of people from around the world, including indigenous American Indians, African Americans, Asians, Europeans, Pacific Islanders, and South Americans. </p>
+      </div>
+      <div class="col-md-5">
+    <br> <br> <br> <br>
+        <p><button id="post-american" v-on:click="start_posting('American')">Posts My Restaurant</button></p>
       </div>
     </div>
-    <div class="container marketing" v-if=" page_state === 'market'">
 
-      <!-- Three columns of text below the carousel -->
-      <div class="row">
-        <div class="col-lg-4">
-           <img style="border-radius: 25px" src="{{=URL('static', 'images/american.jpg')}}" />
-            <h2>            </h2>
-          <h2>American food</h2>
+    <hr class="featurette-divider">
 
-          <p><button id="exp-american" v-on:click="post_filter = 'American'; set_page_state('posts')">Explore American Food</button></p>
-
-        </div><!-- /.col-lg-4 -->
-        <div class="col-lg-4">
-         <img style="border-radius: 25px" src="{{=URL('static', 'images/chinese.jpg')}}" />
-            <h2>            </h2>
-          <h2>Chinese food</h2>
-
-          <p><button id="exp-chinese" v-on:click="post_filter = 'Chinese'; set_page_state('posts')">Explore Chinese Food</button></p>
-
-        </div><!-- /.col-lg-4 -->
-        <div class="col-lg-4">
-          <img style="border-radius: 25px" src="{{=URL('static', 'images/japanese.jpg')}}" />
-            <h2>            </h2>
-          <h2>Japanese food</h2>
-
-          <p><button id="exp-japanese" v-on:click="post_filter = 'Japanese'; set_page_state('posts')">Explore Japanese Food</button></p>
-        </div><!-- /.col-lg-4 -->
-
-            <div class="col-lg-4">
-         <img style="border-radius: 25px" src="{{=URL('static', 'images/mexican.jpg')}}" />
-                <h2>            </h2>
-          <h2>Mexican food</h2>
-
-          <p><button id="exp-mexican" v-on:click="post_filter = 'Mexican'; set_page_state('posts')">Explore Mexican Food</button></p>
-        </div><!-- /.col-lg-4 -->
-
-            <div class="col-lg-4">
-          <img style="border-radius: 25px" src="{{=URL('static', 'images/european.jpg')}}" />
-                <h2>            </h2>
-          <h2>European food</h2>
-
-          <p><button id="exp-european" v-on:click="post_filter = 'European'; set_page_state('posts')">Explore European Food</button></p>
-        </div><!-- /.col-lg-4 -->
-
-            <div class="col-lg-4">
-          <img style="border-radius: 25px" src="{{=URL('static', 'images/other.jpg')}}" />
-                <h2>            </h2>
-          <h2>Other food</h2>
-
-          <p><button id="exp-other" v-on:click="post_filter = 'Other'; set_page_state('posts')">Explore Other Food</button></p>
-        </div><!-- /.col-lg-4 -->
-      </div><!-- /.row -->
-
-
-
-      <!-- START THE FEATURETTES -->
-
-      <hr class="featurette-divider">
-
-      <div class="row featurette">
-        <div class="col-md-7">
-          <h2 class="featurette-heading">American Food. <span class="text-muted">It'll blow your mind.</span></h2>
-          <p class="lead">American cuisine reflects the history of the United States, blending the culinary contributions of various groups of people from around the world, including indigenous American Indians, African Americans, Asians, Europeans, Pacific Islanders, and South Americans. </p>
-        </div>
-        <div class="col-md-5">
-       <br> <br> <br> <br>
-          <p><button id="post-american" v-on:click="start_posting('American')">Posts My Restaurant</button></p>
-        </div>
+    <div class="row featurette">
+      <div class="col-md-7 push-md-5">
+        <h2 class="featurette-heading">Chinese Food <span class="text-muted">See for yourself.</span></h2>
+        <p class="lead">Chinese cuisine is an important part of Chinese culture, which includes cuisine originating from the diverse regions of China, as well as from Chinese people in other parts of the world. </p>
       </div>
+      <div class="col-md-5 pull-md-7">
+      <br> <br> <br> <br>
+      <p><button id="post-chinese" v-on:click="start_posting('Chinese')">Posts My Restaurant</button></p>
 
-      <hr class="featurette-divider">
-
-      <div class="row featurette">
-        <div class="col-md-7 push-md-5">
-          <h2 class="featurette-heading">Chinese Food <span class="text-muted">See for yourself.</span></h2>
-          <p class="lead">Chinese cuisine is an important part of Chinese culture, which includes cuisine originating from the diverse regions of China, as well as from Chinese people in other parts of the world. </p>
-        </div>
-        <div class="col-md-5 pull-md-7">
-         <br> <br> <br> <br>
-         <p><button id="post-chinese" v-on:click="start_posting('Chinese')">Posts My Restaurant</button></p>
-
-        </div>
       </div>
+    </div>
 
-      <hr class="featurette-divider">
+    <hr class="featurette-divider">
 
-      <div class="row featurette">
-        <div class="col-md-7">
-          <h2 class="featurette-heading">Japanese Food <span class="text-muted">Checkmate.</span></h2>
-          <p class="lead">Japanese cuisine encompasses the regional and traditional foods of Japan, which have developed through centuries of social and economic changes. The traditional cuisine of Japan (和食 washoku) is based on rice with miso soup and other dishes;</p>
-        </div>
-        <div class="col-md-5">
-         <br> <br> <br> <br>
-         <p><button id="post-japanese" v-on:click="start_posting('Japanese')">Posts My Restaurant</button></p>
-
-        </div>
+    <div class="row featurette">
+      <div class="col-md-7">
+        <h2 class="featurette-heading">Japanese Food <span class="text-muted">Checkmate.</span></h2>
+        <p class="lead">Japanese cuisine encompasses the regional and traditional foods of Japan, which have developed through centuries of social and economic changes. The traditional cuisine of Japan (和食 washoku) is based on rice with miso soup and other dishes;</p>
       </div>
+      <div class="col-md-5">
+      <br> <br> <br> <br>
+      <p><button id="post-japanese" v-on:click="start_posting('Japanese')">Posts My Restaurant</button></p>
 
-      <hr class="featurette-divider">
-
-      <div class="row featurette">
-        <div class="col-md-7">
-          <h2 class="featurette-heading">Mexican Food <span class="text-muted">Checkmate.</span></h2>
-          <p class="lead">Mexican cuisine began about 9,000 years ago, when agricultural communities such as the Maya formed, domesticating maize, creating the standard process of corn nixtamalization, and establishing their foodways. </p>
-        </div>
-        <div class="col-md-5">
-         <br> <br> <br> <br>
-            <p><button id="post-mexican" v-on:click="start_posting('Mexican')">Posts My Restaurant</button></p>
-        </div>
       </div>
+    </div>
 
-      <hr class="featurette-divider">
+    <hr class="featurette-divider">
 
-      <div class="row featurette">
-        <div class="col-md-7">
-          <h2 class="featurette-heading">European Food <span class="text-muted">Checkmate.</span></h2>
-          <p class="lead">European cuisine, or alternatively Western cuisine, is a generalised term collectively referring to the cuisines of Europe[1] and other Western countries,[2] including (depending on the definition) that of Russia,[2] as well as non-indigenous cuisines of Australasia, the Americas, Southern Africa, and Oceania, which derive substantial influence from European settlers in those regions. </p>
-        </div>
-        <div class="col-md-5">
-          <br> <br> <br> <br>
-            <p><button id="post-european" v-on:click="start_posting('European')">Posts My Restaurant</button></p>
-        </div>
+    <div class="row featurette">
+      <div class="col-md-7">
+        <h2 class="featurette-heading">Mexican Food <span class="text-muted">Checkmate.</span></h2>
+        <p class="lead">Mexican cuisine began about 9,000 years ago, when agricultural communities such as the Maya formed, domesticating maize, creating the standard process of corn nixtamalization, and establishing their foodways. </p>
       </div>
-
-      <hr class="featurette-divider">
-
-      <div class="row featurette">
-        <div class="col-md-7">
-          <h2 class="featurette-heading">Other food<span class="text-muted"> We all know it</span></h2>
-          <p class="lead">Food is any substance[1] consumed to provide nutritional support for an organism. It is usually of plant or animal origin, and contains essential nutrients, such as carbohydrates, fats, proteins, vitamins, or minerals. The substance is ingested by an organism and assimilated by the organism's cells to provide energy, maintain life, or stimulate growth.</p>
-        </div>
-        <div class="col-md-5">
-         <br> <br> <br> <br>
-          <p><button id="post-other" v-on:click="start_posting('Other')">Posts My Restaurant</button></p>
-        </div>
+      <div class="col-md-5">
+      <br> <br> <br> <br>
+          <p><button id="post-mexican" v-on:click="start_posting('Mexican')">Posts My Restaurant</button></p>
       </div>
+    </div>
 
-      <!-- <hr class="featurette-divider"> -->
+    <hr class="featurette-divider">
 
-      <!-- /END THE FEATURETTES -->
+    <div class="row featurette">
+      <div class="col-md-7">
+        <h2 class="featurette-heading">European Food <span class="text-muted">Checkmate.</span></h2>
+        <p class="lead">European cuisine, or alternatively Western cuisine, is a generalised term collectively referring to the cuisines of Europe[1] and other Western countries,[2] including (depending on the definition) that of Russia,[2] as well as non-indigenous cuisines of Australasia, the Americas, Southern Africa, and Oceania, which derive substantial influence from European settlers in those regions. </p>
+      </div>
+      <div class="col-md-5">
+        <br> <br> <br> <br>
+          <p><button id="post-european" v-on:click="start_posting('European')">Posts My Restaurant</button></p>
+      </div>
+    </div>
+
+    <hr class="featurette-divider">
+
+    <div class="row featurette">
+      <div class="col-md-7">
+        <h2 class="featurette-heading">Other food<span class="text-muted"> We all know it</span></h2>
+        <p class="lead">Food is any substance[1] consumed to provide nutritional support for an organism. It is usually of plant or animal origin, and contains essential nutrients, such as carbohydrates, fats, proteins, vitamins, or minerals. The substance is ingested by an organism and assimilated by the organism's cells to provide energy, maintain life, or stimulate growth.</p>
+      </div>
+      <div class="col-md-5">
+      <br> <br> <br> <br>
+        <p><button id="post-other" v-on:click="start_posting('Other')">Posts My Restaurant</button></p>
+      </div>
+    </div>
 
 
+    <!-- <hr class="featurette-divider"> -->
 
+    <!-- /END THE FEATURETTES -->
+    </span>
+  </div><!-- /.container -->
 
-
-    </div><!-- /.container -->
+  
   <div class="main_content" v-if="page_state === 'posts'">
-
-    <div id="add_post" v-if="is_logged_in">
-      <div v-if="show_form">
-        <div class="w3-container w3-blue">
-          <div class="label threequarters">
-            Restaurant name:
+    <span class="fadeIn animated" style = "display:block">
+      <div id="add_post" v-if="is_logged_in">
+        <div v-if="show_form">
+          <div class="w3-container">
+            <div class="label threequarters">
+              <!--Restaurant name:-->
+            </div>
+            <div class="form threequarters">
+              <span class="error" v-if="title_empty">Restaurant name cannot be empty!</span>
+              <input v-model="form_title" placeholder="Enter your restaurant's name"/>
+            </div>
           </div>
-          <div class="form threequarters">
-            <span class="error" v-if="title_empty">Restaurant name cannot be empty!</span>
-            <input v-model="form_title" placeholder="Enter your restaurant's name"/>
+          <div class="w3-container">
+            <div class="label quarter">
+              <!--Description:-->
+            </div>
+            <div class="form threequarters">
+              <span class="error" v-if="cont_empty">Restaurant description cannot be empty!</span>
+              <textarea v-model="form_content" placeholder="Enter the introduction of your restaurant"></textarea>
+            </div>
           </div>
-        </div>
-        <div class="w3-container w3-red">
-          <div class="label quarter">
-            Introduction:
+          <div class="w3-container">
+            <div class="label quarter">
+              <!--Category:-->
+            </div>
+            <div class="form threequarters">
+              <select v-model="form_category">
+                <option value="">Select a category</option>
+                <option value="American">American</option>
+                <option value="Chinese">Chinese</option>
+                <option value="Japanese">Japanese</option>
+                <option value="Mexican">Mexican</option>
+                <option value="European">European</option>
+                <option value="Other">Other</option>
+              </select>
+            </div>
           </div>
-          <div class="form threequarters">
-            <span class="error" v-if="cont_empty">Restaurant description cannot be empty!</span>
-            <textarea v-model="form_content" placeholder="Enter the introduction of your restaurant"></textarea>
-          </div>
-        </div>
-        <div class="w3-container w3-blue">
-          <div class="label quarter">
-            Category:
-          </div>
-          <div class="form threequarters">
-            <select v-model="form_category">
-              <option value="">Select a category</option>
-              <option value="American">American</option>
-              <option value="Chinese">Chinese</option>
-              <option value="Japanese">Japanese</option>
-              <option value="Mexican">Mexican</option>
-              <option value="European">European</option>
-              <option value="Other">Other</option>
-            </select>
-          </div>
-        </div>
-        <div class="w3-container w3-lightskyblue"><div class="middle"></div>
-          <div class="threequarters">
-            <div class="submit">
-              <button id="add-post" v-on:click="add_post">Submit</button>
+          <div class="w3-container w3-lightskyblue"><div class="middle"></div>
+            <div class="threequarters">
+              <div class="submit">
+                <button id="add-post" v-on:click="add_post">Submit</button>
+              </div>
             </div>
           </div>
         </div>
+          <button v-if="!show_form" v-on:click="show_form = true">Post My Restaurant <i class="fa fa-plus-circle"></i></button>
       </div>
-        <button v-if="!show_form" v-on:click="show_form = true">Post My Restaurant <i class="fa fa-plus-circle"></i></button>
-    </div>
 
-    <select v-model="post_filter" v-on:change="get_posts(post_filter)">
-          <option value="">Filter by...</option>
-          <option value="American">Filter by American</option>
-          <option value="Chinese">Filter by Chinese</option>
-          <option value="Japanese">Filter by Japanese</option>
-          <option value="Mexican">Filter by Mexican</option>
-          <option value="European">Filter by European</option>
-          <option value="Other">Filter by Other</option>
-    </select>
-    <!-- Message in case there are no posts. -->
-    <div v-if="post_list.length === 0">There are no ${post_filter} restaurants posted.</div>
+      <select v-model="post_filter" v-on:change="get_posts(post_filter)">
+            <option value="">Filter by...</option>
+            <option value="American">Filter by American</option>
+            <option value="Chinese">Filter by Chinese</option>
+            <option value="Japanese">Filter by Japanese</option>
+            <option value="Mexican">Filter by Mexican</option>
+            <option value="European">Filter by European</option>
+            <option value="Other">Filter by Other</option>
+      </select>
+      <!-- Message in case there are no posts. -->
+      <div v-if="post_list.length === 0">There are no ${post_filter} restaurants posted.</div>
 
-    <!-- We display the posts. -->
-    <div id="post_list">
-      <div class="post_div" v-for="post in post_list">
-          <div class="post_title" v-if="!post.editing">[${post.post_category}] ${post.post_title}</div>
-          <div v-if="post.editing">
-            <span class="error" v-if="post.title_empty">Restaurant description cannot be empty!</span>
-            <textarea v-model="post.post_title"></textarea>
-          </div>
-          <div class="post_content">
+      <!-- We display the posts. -->
+      <div id="post_list">
+        <div class="post_div" v-for="post in post_list">
+            <div class="post_title" v-if="!post.editing">[${post.post_category}] ${post.post_title}</div>
+            <div v-if="post.editing">
+              <span class="error" v-if="post.title_empty">Restaurant description cannot be empty!</span>
+              <textarea v-model="post.post_title"></textarea>
+            </div>
+            <div class="post_content">
+              
+            <!-- Code for star ratings. -->
+              <div v-for="starr_idx in [0,1,2]">
+                ${rating_strings[starr_idx]}
+                <br>
+                <span v-for="idx in star_indices">
+                  <i v-if="idx <= post.avg_ratings[starr_idx]" class="fa fa-star"></i>
+                  <i v-if="idx > post.avg_ratings[starr_idx]" class="fa fa-star-o"></i>
+                </span>
+              </div>
+            <!-- Code for star ratings end. -->
             
-    			<!-- Code for star ratings. -->
-            <div v-for="starr_idx in [0,1,2]">
-		  	      ${rating_strings[starr_idx]}
-  			      <span v-for="idx in star_indices">
-      		  	  <i v-if="idx <= post.avg_ratings[starr_idx]" class="fa fa-star"></i>
-      		  	  <i v-if="idx > post.avg_ratings[starr_idx]" class="fa fa-star-o"></i>
-  			      </span>
-			      </div>
-          <!-- Code for star ratings end. -->
-          
-          	<div v-if="!post.editing">
-          	  <div>${post.post_content}</div>
-          	  <div class="start-edit" v-if="post.editable">
-                	  <button id="edit" v-on:click="edit_post(post._idx)">Edit <i class="fa fa-pencil-square-o"></i></button>
-            	</div>
-          	</div>
-          	<div v-if="post.editing">
-              <span class="error" v-if="post.cont_empty">Restaurant description cannot be empty!</span>
-          	  <textarea v-model="post.post_content"></textarea>
-          	  <div class="editing">
-                <button id="save-edit" v-on:click="save_edit(post._idx)">Save <i class="fa fa-floppy-o"></i></button>
-                <button id="delete" v-on:click="delete_post(post._idx)" v-on:mouseout="post.confirm_delete = false">
-                  <span class="error" v-if="post.confirm_delete">Are you sure?</span>
-                  <span v-else>Delete <i class="fa fa-trash"></i></span>
-                </button>
-            	</div>
-          	</div>
-     	    </div>
-          <div class="attributes">
-
-            <!-- Code for Replies. -->
-            <div class="replies_div">
-              <div v-if="post.show_reply">
-                <button v-on:click="show_reply_toggle(post._idx)">Hide Reviews <i class="fa fa-search-minus"></i></button>
-                <button v-if="is_logged_in" v-show="!post.replying" v-on:click="post.replying = true">Add Review <i class="fa fa-plus-circle"></i></button>
-                <div v-if="post.replying">
-                  <div class="container form_row">
-                    <div class="form">
-                      <span class="error" v-if="post.reply_empty">Review cannot be empty!</span>
-                      <textarea v-model="post.reply_content" placeholder="Enter the content of your reply"></textarea>
-                      And your ratings:
-                      <!-- Code for star ratings. -->
-                      <div v-for="starr_idx in [0,1,2]">
-  				  	          ${rating_strings[starr_idx]}
-            			  	  <span v-on:mouseout="new_reply_stars_out(post._idx)">
-                			    <span v-on:mouseover="new_reply_stars_over(post._idx, starr_idx, idx)"
-                      		  	  v-on:click="new_reply_set_stars(post._idx, starr_idx, idx)"
-                      		  	  v-for="idx in star_indices">
-                    		  	  <i v-if="idx <= post._display_ratings[starr_idx]" class="fa fa-star"></i>
-                    		  	  <i v-if="idx > post._display_ratings[starr_idx]" class="fa fa-star-o"></i>
-                			    </span>
-            				    </span>
-    					        </div>
-    					        <!-- Code for star ratings end. -->
-                    </div>
-                  </div>
-                  <div class="container form_row">
-                    <div class="submit">
-                      <button id="add-reply" v-on:click="add_reply(post._idx)">Submit</button>
-                    </div>
-                  </div>
-                </div>
-
-                <!-- Message in case there are no replies. -->
-                <div v-if="post.reply_list.length === 0">There are no reviews.</div>
-
-                <!-- We display the replies. -->
-                <div id="reply_list">
-                  <span v-if="post.reply_list.length > 0">Reviews:</span>
-                  <div class="reply_div" v-for="reply in post.reply_list">
-                    <div class="reply_author">Author: ${reply.reply_author}</div>
-                    <div class="reply_content">
-                  <!-- Code for star ratings. -->
-      				  	<div v-for="starr_idx in [0,1,2]">
-      				  	  ${rating_strings[starr_idx]}
-            			  <span v-on:mouseout="stars_out(post._idx, reply._idx)">
-              			  <span v-on:mouseover="stars_over(post._idx, reply._idx, starr_idx, idx)"
-              		  	  	  v-on:click="set_stars(post._idx, reply._idx, starr_idx, idx)"
-              		  	  	  v-for="idx in star_indices">
-              		  	  <i v-if="idx <= reply._arr_num_stars[starr_idx]" class="fa fa-star"></i>
-              		  	  <i v-if="idx > reply._arr_num_stars[starr_idx]" class="fa fa-star-o"></i>
-              			  </span>
-            				</span>
-            			</div>
-					        <!-- Code for star ratings ends. -->
-                  <div v-if="!reply.editing">
-                    <div>Content: ${reply.reply_content}</div>
-                    <div class="start-edit" v-if="reply.editable">
-                      <button id="edit" v-on:click="edit_reply(post._idx, reply._idx)">Edit <i class="fa fa-pencil-square-o"></i></button>
-                    </div>
-                  </div>
-                  <div v-if="reply.editing">
-                    <span class="error" v-if="reply.edit_empty">Restaurant description cannot be empty!</span>
-                    <textarea v-model="reply.reply_content"></textarea>
-                    <div class="editing">
-                      <button id="save-edit" v-on:click="save_reply_edit(post._idx, reply._idx)">Save <i class="fa fa-floppy-o"></i></button>
-                      <button id="delete-reply" v-on:click="delete_reply(post._idx, reply._idx)" v-on:mouseout="reply.confirm_delete = false">
-                        <span class="error" v-if="reply.confirm_delete" >Are you sure?</span>
-                        <span v-else>Delete <i class="fa fa-trash"></i></span>
-                      </button>
-                      
-                    </div>
-                  </div>
-
-		            <!-- Code for Thumbs. -->
-		            <div class="thumbs">
-		              <span class="thumb_up">
-		                <span class="toggle_tUp"
-		                      v-on:mouseover="thumbUp_mouseover(post._idx, reply._idx);"
-		                      v-on:click="thumbUp_click(post._idx, reply._idx);"
-		                      v-on:mouseout="thumbUp_mouseout(post._idx, reply._idx);">
-		                  <i v-if="reply._tUp" class="fa fa-thumbs-up"
-		                  v-bind:class="{changed: reply._tUp_black === false}"></i>
-		                  <i v-if="!reply._tUp" class="fa fa-thumbs-o-up"
-		                  v-bind:class="{changed: reply._tUp_black === false}"></i>
-		                </span>
-		              </span>
-		              <span class="thumb_countU"> ${reply._countU}</span>
-		              <span class="thumb_down">
-		                <span class="toggle_tDown"
-		                      v-on:mouseover="thumbDown_mouseover(post._idx, reply._idx);"
-		                      v-on:click="thumbDown_click(post._idx, reply._idx);"
-		                      v-on:mouseout="thumbDown_mouseout(post._idx, reply._idx);">
-		                  <i v-if="reply._tDown" class="fa fa-thumbs-down"
-		                  	v-bind:class="{changed: reply._tDown_black === false}"></i>
-		                  <i v-if="!reply._tDown" class="fa fa-thumbs-o-down"
-		                  	v-bind:class="{changed: reply._tDown_black === false}"></i>
-		                </span>
-		              </span>
-		              <span class="thumb_countD"> ${reply._countD}</span>
-		            </div>
-	              <!-- Code for Thumbs end. -->
-                    </div>
-                  </div>
+              <div v-if="!post.editing">
+                <div>${post.post_content}</div>
+                <div class="start-edit" v-if="post.editable">
+                      <button id="edit" v-on:click="edit_post(post._idx)">Edit <i class="fa fa-pencil-square-o"></i></button>
                 </div>
               </div>
-              <button v-show="!post.show_reply" v-on:click="get_replies(post._idx); show_reply_toggle(post._idx)"><span v-if="is_logged_in">Add / </span>Show Reviews <i class="fa fa-search-plus"></i></button>
+              <div v-if="post.editing">
+                <span class="error" v-if="post.cont_empty">Restaurant description cannot be empty!</span>
+                <textarea v-model="post.post_content"></textarea>
+                <div class="editing">
+                  <button id="save-edit" v-on:click="save_edit(post._idx)">Save <i class="fa fa-floppy-o"></i></button>
+                  <button id="delete" v-on:click="delete_post(post._idx)" v-on:mouseout="post.confirm_delete = false">
+                    <span class="error" v-if="post.confirm_delete">Are you sure?</span>
+                    <span v-else>Delete <i class="fa fa-trash"></i></span>
+                  </button>
+                </div>
+              </div>
             </div>
-          </div>
+            <div class="attributes">
+
+              <!-- Code for Replies. -->
+              <div class="replies_div">
+                <div v-if="post.show_reply">
+                  <button v-on:click="show_reply_toggle(post._idx)">Hide Reviews <i class="fa fa-search-minus"></i></button>
+                  <button v-if="is_logged_in" v-show="!post.replying" v-on:click="post.replying = true">Add Review <i class="fa fa-plus-circle"></i></button>
+                  <div v-if="post.replying">
+                    <div class="container form_row">
+                      <div class="form">
+                        <span class="error" v-if="post.reply_empty">Review cannot be empty!</span>
+                        <textarea v-model="post.reply_content" placeholder="Enter the content of your reply"></textarea>
+                        
+                        And your ratings:
+                        <!-- Code for star ratings. -->
+                        <div v-for="starr_idx in [0,1,2]">
+                            ${rating_strings[starr_idx]}
+                            <br>
+                          <span v-on:mouseout="new_reply_stars_out(post._idx)">
+                            <span v-on:mouseover="new_reply_stars_over(post._idx, starr_idx, idx)"
+                                  v-on:click="new_reply_set_stars(post._idx, starr_idx, idx)"
+                                  v-for="idx in star_indices">
+                                <i v-if="idx <= post._display_ratings[starr_idx]" class="fa fa-star"></i>
+                                <i v-if="idx > post._display_ratings[starr_idx]" class="fa fa-star-o"></i>
+                            </span>
+                          </span>
+                        </div>
+                        <!-- Code for star ratings end. -->
+                        <div class="container form_row">
+                          <div class="submit">
+                          <button id="add-reply" v-on:click="add_reply(post._idx)">Submit</button>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- Message in case there are no replies. -->
+                  <div v-if="post.reply_list.length === 0">There are no reviews.</div>
+
+                  <!-- We display the replies. -->
+                  <div id="reply_list">
+                    <span v-if="post.reply_list.length > 0">Reviews:</span>
+                    <div class="reply_div" v-for="reply in post.reply_list">
+                      <div class="reply_author">Author: ${reply.reply_author}</div>
+                      <div class="reply_content">
+
+                    <!-- Code for star ratings. -->
+                    <div v-for="starr_idx in [0,1,2]">
+                      ${rating_strings[starr_idx]}
+                      <span v-on:mouseout="stars_out(post._idx, reply._idx)">
+                        <span v-on:mouseover="stars_over(post._idx, reply._idx, starr_idx, idx)"
+                              v-on:click="set_stars(post._idx, reply._idx, starr_idx, idx)"
+                              v-for="idx in star_indices">
+                          <i v-if="idx <= reply._arr_num_stars[starr_idx]" class="fa fa-star"></i>
+                          <i v-if="idx > reply._arr_num_stars[starr_idx]" class="fa fa-star-o"></i>
+                        </span>
+                      </span>
+                    </div>
+                    <!-- Code for star ratings ends. -->
+                    <div v-if="!reply.editing">
+                      <div>Content: ${reply.reply_content}</div>
+                      <div class="start-edit" v-if="reply.editable">
+                        <button id="edit" v-on:click="edit_reply(post._idx, reply._idx)">Edit <i class="fa fa-pencil-square-o"></i></button>
+                      </div>
+                    </div>
+                    <div v-if="reply.editing">
+                      <span class="error" v-if="reply.edit_empty">Restaurant description cannot be empty!</span>
+                      <textarea v-model="reply.reply_content"></textarea>
+                      <div class="editing">
+                        <button id="save-edit" v-on:click="save_reply_edit(post._idx, reply._idx)">Save <i class="fa fa-floppy-o"></i></button>
+                        <button id="delete-reply" v-on:click="delete_reply(post._idx, reply._idx)" v-on:mouseout="reply.confirm_delete = false">
+                          <span class="error" v-if="reply.confirm_delete" >Are you sure?</span>
+                          <span v-else>Delete <i class="fa fa-trash"></i></span>
+                        </button>
+                        
+                      </div>
+                    </div>
+
+                  <!-- Code for Thumbs. -->
+                  <div class="thumbs">
+                    <span class="thumb_up">
+                      <span class="toggle_tUp"
+                            v-on:mouseover="thumbUp_mouseover(post._idx, reply._idx);"
+                            v-on:click="thumbUp_click(post._idx, reply._idx);"
+                            v-on:mouseout="thumbUp_mouseout(post._idx, reply._idx);">
+                        <i v-if="reply._tUp" class="fa fa-thumbs-up"
+                        v-bind:class="{changed: reply._tUp_black === false}"></i>
+                        <i v-if="!reply._tUp" class="fa fa-thumbs-o-up"
+                        v-bind:class="{changed: reply._tUp_black === false}"></i>
+                      </span>
+                    </span>
+                    <span class="thumb_countU"> ${reply._countU}</span>
+                    <span class="thumb_down">
+                      <span class="toggle_tDown"
+                            v-on:mouseover="thumbDown_mouseover(post._idx, reply._idx);"
+                            v-on:click="thumbDown_click(post._idx, reply._idx);"
+                            v-on:mouseout="thumbDown_mouseout(post._idx, reply._idx);">
+                        <i v-if="reply._tDown" class="fa fa-thumbs-down"
+                          v-bind:class="{changed: reply._tDown_black === false}"></i>
+                        <i v-if="!reply._tDown" class="fa fa-thumbs-o-down"
+                          v-bind:class="{changed: reply._tDown_black === false}"></i>
+                      </span>
+                    </span>
+                    <span class="thumb_countD"> ${reply._countD}</span>
+                  </div>
+                  <!-- Code for Thumbs end. -->
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <button v-show="!post.show_reply" v-on:click="get_replies(post._idx); show_reply_toggle(post._idx)"><span v-if="is_logged_in">Add / </span>Show Reviews <i class="fa fa-search-plus"></i></button>
+              </div>
+            </div>
+        </div>
       </div>
-    </div>
+    </span>
   </div>
 </div>
 <script src="{{=URL('static', 'js/default_index.js')}}"></script>
