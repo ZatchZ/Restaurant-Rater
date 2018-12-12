@@ -256,7 +256,8 @@
       <div id="post_list">
         <div class="post_div" v-for="post in post_list">
             <div class="post_title" v-if="!post.editing">[${post.post_category}] ${post.post_title}</div>
-            <div class="post_addr" v-if="!post.editing">Location: ${post.post_address}</div>
+            <br>
+            <div class="post_addr" v-if="!post.editing"><b>Location:</b> ${post.post_address}</div>
             <div v-if="post.editing">
               <span class="error" v-if="post.title_empty">Restaurant description cannot be empty!</span>
               <input v-model="post.post_title"></input>
