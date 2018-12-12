@@ -22,7 +22,7 @@
     var get_all_stars_url = "{{=URL('api', 'all_stars')}}";
     //user misc
     var login_url = "{{=URL('default', 'user')}}";
-    var is_logged_in = "{{='false' if auth.user is None else 'true'}}";
+    var is_logged_in = {{='false' if auth.user is None else 'true'}};
     var curr_user = "{{=auth.user.email if auth.user else None}}";
 </script>
 <link href="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
