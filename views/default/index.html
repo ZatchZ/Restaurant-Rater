@@ -294,7 +294,7 @@
               <div class="replies_div">
                 <div v-if="post.show_reply">
                   <button v-on:click="show_reply_toggle(post._idx)">Hide Reviews <i class="fa fa-search-minus"></i></button>
-                  <button v-if="is_logged_in" v-show="!post.replying" v-on:click="post.replying = true">Add Review <i class="fa fa-plus-circle"></i></button>
+                  <button v-if="is_logged_in && !post.already_replied" v-show="!post.replying" v-on:click="post.replying = true">Add Review <i class="fa fa-plus-circle"></i></button>
                   <div v-if="post.replying">
                     <div class="container form_row">
                       <div class="form">
@@ -399,7 +399,9 @@
                     </div>
                   </div>
                 </div>
-                <button v-show="!post.show_reply" v-on:click="get_replies(post._idx); show_reply_toggle(post._idx)"><span v-if="is_logged_in">Add / </span>Show Reviews <i class="fa fa-search-plus"></i></button>
+                <button v-show="!post.show_reply" v-on:click="get_replies(post._idx); show_reply_toggle(post._idx)">
+                  <span v-if="is_logged_in">Add / </span>Show Reviews <i class="fa fa-search-plus"></i>
+                </button>
               </div>
             </div>
         </div>

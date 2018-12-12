@@ -82,7 +82,7 @@ var app = function() {
         enumerate(self.vue.post_list);
         self.vue.post_list.map(function (e) {
             //editing
-            Vue.set(e, 'editable', (curr_user == e.post_author));
+            Vue.set(e, 'editable', (e.post_author == curr_user));
             Vue.set(e, 'editing', false);
             Vue.set(e, 'title_empty', false);
             Vue.set(e, 'cont_empty', false);
@@ -90,6 +90,7 @@ var app = function() {
             //replies
             Vue.set(e, 'show_reply', false);
             Vue.set(e, 'replying', false);
+            Vue.set(e, 'already_replied', false);
             Vue.set(e, 'reply_content', '');
             Vue.set(e, 'reply_empty', false);
             Vue.set(e, 'reply_ratings', [0,0,0]);
@@ -182,7 +183,12 @@ var app = function() {
         var p = self.vue.post_list[post_idx];
         enumerate(p.reply_list);
         p.reply_list.map(function (e) {
-            Vue.set(e, 'editable', (curr_user == e.reply_author));
+            //check if already replied
+            if(e.reply_author == curr_user){
+                p.already_replied = true;
+                Vue.set(e, 'editable', true);
+            }
+            //editing
             Vue.set(e, 'editing', false);
             Vue.set(e, 'edit_empty', false);
             Vue.set(e, 'confirm_delete', false);
@@ -243,6 +249,7 @@ var app = function() {
                 self.get_replies(post_idx);
                 self.avg_post_stars(p)
                 p.replying = false;
+                p.already_replied = true;
             });
     };
 
@@ -264,6 +271,7 @@ var app = function() {
             },
             function (data) {
                 self.get_replies(post_idx);
+                p.already_replied=false;
             });
     };
     self.save_reply_edit = function (post_idx, reply_idx) {
