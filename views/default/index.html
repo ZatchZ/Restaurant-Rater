@@ -208,6 +208,9 @@
             <div class="form threequarters">
               <span class="error" v-if="cont_empty">Restaurant description cannot be empty!</span>
               <textarea v-model="form_content" placeholder="Enter the introduction of your restaurant"></textarea>
+              <br><br>
+              <span class="error" v-if="addr_empty">Restaurant location cannot be empty!</span>
+              <input v-model="form_address" placeholder="Where is this restaurant?"></input>
             </div>
           </div>
           <div class="w3-container">
@@ -237,7 +240,7 @@
           <button v-if="!show_form" v-on:click="show_form = true">Post My Restaurant <i class="fa fa-plus-circle"></i></button>
       </div>
 
-      <select v-model="post_filter" v-on:change="get_posts(post_filter)">
+      <select v-model="post_filter" v-on:change="get_posts(post_filter, search_term)">
             <option value="">Filter by...</option>
             <option value="American">Filter by American</option>
             <option value="Chinese">Filter by Chinese</option>
@@ -247,15 +250,18 @@
             <option value="Other">Filter by Other</option>
       </select>
       <!-- Message in case there are no posts. -->
-      <div v-if="post_list.length === 0">There are no ${post_filter} restaurants posted.</div>
+      <div v-if="post_list.length === 0">There are no ${post_filter} restaurants posted<span v-if="search_term !=''"> that matches the search term</span>.</div>
 
       <!-- We display the posts. -->
       <div id="post_list">
         <div class="post_div" v-for="post in post_list">
             <div class="post_title" v-if="!post.editing">[${post.post_category}] ${post.post_title}</div>
+            <div class="post_addr" v-if="!post.editing">Location: ${post.post_address}</div>
             <div v-if="post.editing">
               <span class="error" v-if="post.title_empty">Restaurant description cannot be empty!</span>
-              <textarea v-model="post.post_title"></textarea>
+              <input v-model="post.post_title"></input>
+              <span class="error" v-if="post.addr_empty">Restaurant location cannot be empty!</span>
+              <input v-model="post.post_address"></input>
             </div>
             <div class="post_content">
               

@@ -6,6 +6,7 @@ def add_post():
     post_id = db.post.insert(
         post_title=request.vars.post_title,
         post_content=request.vars.post_content,
+        post_address=request.vars.post_address,
         post_category=None if request.vars.post_category == "" else request.vars.post_category,
     )
     # We return the id of the new post, so we can insert it along all the others.
@@ -18,6 +19,7 @@ def edit_post():
     row.update_record(
         post_title=request.vars.post_title,
         post_content=request.vars.post_content,
+        post_address=request.vars.post_address,
         )
     return
 
@@ -44,6 +46,7 @@ def get_post_list():
                 id=row.id,
                 post_title=row.post_title,
                 post_content=row.post_content,
+                post_address=row.post_address,
                 post_author=row.post_author,
                 post_category=row.post_category,
         ))

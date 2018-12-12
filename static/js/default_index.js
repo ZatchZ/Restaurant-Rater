@@ -26,17 +26,24 @@ var app = function() {
             err_flag = true;
         }
         else self.vue.cont_empty = false;
+        if(self.vue.form_address == ""){
+            self.vue.addr_empty = true;
+            err_flag = true;
+        }
+        else self.vue.addr_empty = false;
         if(err_flag) return;
         // We disable the button, to prevent double submission.
         $.web2py.disableElement($("#add-post"));
         var sent_title = self.vue.form_title; // Makes a copy 
-        var sent_content = self.vue.form_content; // 
-        var sent_category = self.vue.form_category; // 
+        var sent_content = self.vue.form_content;
+        var sent_category = self.vue.form_category;
+        var sent_address = self.vue.form_address;
         $.post(add_post_url,
             // Data we are sending.
             {
                 post_title: self.vue.form_title,
                 post_content: self.vue.form_content,
+                post_address: self.vue.form_address,
                 post_category: self.vue.form_category,
             },
             // What do we do when the post succeeds?
@@ -46,12 +53,14 @@ var app = function() {
                 // Clears the form.
                 self.vue.form_title = "";
                 self.vue.form_content = "";
+                self.vue.form_address = "";
                 self.vue.form_category = "";
                 // Adds the post to the list of posts. 
                 var new_post = {
                     id: data.post_id,
                     post_title: sent_title,
                     post_content: sent_content,
+                    post_address: sent_address,
                     post_category: sent_category
                 };
                 self.vue.post_list.unshift(new_post);
@@ -86,6 +95,7 @@ var app = function() {
             Vue.set(e, 'editing', false);
             Vue.set(e, 'title_empty', false);
             Vue.set(e, 'cont_empty', false);
+            Vue.set(e, 'addr_empty', false);
             Vue.set(e, 'confirm_delete', false);
             //replies
             Vue.set(e, 'show_reply', false);
@@ -152,6 +162,11 @@ var app = function() {
             err_flag = true;
         }
         else p.cont_empty = false;
+        if(p.post_address == ""){
+            p.addr_empty = true;
+            err_flag = true;
+        }
+        else p.addr_empty = false;
         if(err_flag) return;
         $.post(edit_post_url,
             {
@@ -247,7 +262,7 @@ var app = function() {
                 };
                 p.reply_list.unshift(new_reply);
                 self.get_replies(post_idx);
-                self.avg_post_stars(p)
+                self.avg_post_stars(p);
                 p.replying = false;
                 p.already_replied = true;
             });
@@ -271,6 +286,7 @@ var app = function() {
             },
             function (data) {
                 self.get_replies(post_idx);
+                self.avg_post_stars(p);
                 p.already_replied=false;
             });
     };
@@ -484,6 +500,8 @@ var app = function() {
             title_empty: false,
             form_content: "",
             cont_empty: false,
+            form_address: "",
+            addr_empty: false,
             form_category: "",
             show_form: false,
             //list of posts
@@ -493,7 +511,6 @@ var app = function() {
             post_filter: "",
             //page misc
             page_state: "market",
-            searching:false,
             search_term: "",
         },
         methods: {
