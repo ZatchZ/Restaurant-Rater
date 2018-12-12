@@ -96,4 +96,7 @@ logger = logging.getLogger(request.application)
 logger.setLevel(logging.INFO)
 
 # Let's log the request.
-logger.info("====> Request: %r %r %r %r" % (request.env.request_method, request.env.path_info, request.args, request.vars))
+if str(request.vars).find("password") < 0:
+    logger.info("====> Request: %r %r %r %r" % (request.env.request_method, request.env.path_info, request.args, request.vars))
+else:
+    logger.info("====> Request: %r %r %r %r" % (request.env.request_method, request.env.path_info, request.args, "[REDACTED] request.vars possibly contains sensitive information."))
