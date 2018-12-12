@@ -56,7 +56,7 @@ var app = function() {
                 };
                 self.vue.post_list.unshift(new_post);
                 // We re-enumerate the array.
-                self.get_posts();
+                self.get_posts(self.vue.post_filter);
                 self.vue.show_form = false;
             });
         // If you put code here, it is run BEFORE the call comes back.
