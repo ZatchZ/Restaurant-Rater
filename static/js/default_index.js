@@ -172,7 +172,9 @@ var app = function() {
             {
                 post_id: p.id,
                 post_title: p.post_title,
-                post_content: p.post_content
+                post_content: p.post_content,
+                post_address: p.post_address,
+
             },
             function (data) {
                 p.editing = false;
